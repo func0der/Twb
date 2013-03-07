@@ -10,6 +10,7 @@ $this->extend('Twb.Template/empty');
  */
 echo $this->Html->tag(array(
 	'xtag' => 'container',
+	'fluid' => BB::read('Twb.layout.container.fluid'),
 	'style' => 'margin-top:50px;margin-bottom:50px',
 	'content' => $this->fetch('content')
 ));

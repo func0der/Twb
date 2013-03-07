@@ -67,6 +67,7 @@ $sidebar = BB::extend($sidebar, BB::read('Twb.layout.sidebar.config', array()));
 
 echo $this->Html->tag(array(
 	'xtag' => 'row',
+	'fluid' => BB::read('Twb.layout.container.fluid'),
 	'if' => BB::read('Twb.layout.sidebar.inverse'),
 	'content' => array($sidebar, $content),
 	'else' => array($content, $sidebar)

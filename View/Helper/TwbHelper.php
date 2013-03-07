@@ -29,17 +29,31 @@ class TwbHelper extends BbHtmlHelper {
 		// true/flase to render or return full array configuration
 		if (is_bool($options)) $options['render'] = $options;
 		
-		$options = BB::setDefaultAttrsId($options, array(
-			'class' => 'container',
+		// intercept the "fluid" param given to the container
+		$base_class = 'container';
+		if ($options === 'fluid') {
+			$base_class = 'container-fluid';
+			$options = array();
+		} elseif (isset($options['fluid']) && $options['fluid']) {
+			$base_class = 'container-fluid';
+			unset($options['fluid']);
+		}
+		
+		$options = BB::setDefaultAttrsId(BB::clear($options), array(
+			'class' => $base_class,
 			'content' => $content,
 			'render' => true
 		));
 		
+		
 		$options = BB::extend(array(
-			'defaults' => array('xtag' => 'row'),
+			'defaults' => array(
+				'xtag' => 'row',
+				'fluid' => ($base_class === 'container-fluid')
+			),
 		), $options);
 		
-		#ddebug($options);
+		#debug($options);
 		
 		$options = $this->_fluidOptions($options);
 		$options = $this->_visibleOptions($options);
@@ -51,8 +65,18 @@ class TwbHelper extends BbHtmlHelper {
 		// true/flase to render or return full array configuration
 		if (is_bool($options)) $options['render'] = $options;
 		
+		// intercept the "fluid" param given to the container
+		$base_class = 'row';
+		if ($options === 'fluid') {
+			$base_class = 'row-fluid';
+			$options = array();
+		} elseif (isset($options['fluid']) && $options['fluid']) {
+			$base_class = 'row-fluid';
+			unset($options['fluid']);
+		}
+		
 		$options = BB::setDefaultAttrsId($options, array(
-			'class' => 'row',
+			'class' => $base_class,
 			'content' => $content,
 			'defaults' => array('xtag' => 'col')
 		));
@@ -176,6 +200,7 @@ class TwbHelper extends BbHtmlHelper {
 			'menu' => array(),
 			'content' => array()
 		), $options);
+		#ddebug($options);
 		
 		return $this->_View->element('Twb.navbar', $options);
 	}

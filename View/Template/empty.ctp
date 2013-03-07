@@ -17,9 +17,12 @@ if ($this->elementExists('navbar')) {
 		'container' => true,
 		'responsive' => true,
 		'logo' => BB::read('Twb.layout.navbar.logo'),
-		'content' => BB::read('Twb.layout.navbar.menu')
+		'menu' => BB::read('Twb.layout.navbar.menu'),
+		'content' => BB::read('Twb.layout.navbar.content')
 	), BB::read('Twb.layout.navbar.config', array())));
 }
+
+
 
 /**
  * Wide Container
@@ -39,6 +42,6 @@ if ($this->elementExists('footbar')) {
 		'xtag' => 'navbar',
 		'fixed' => 'bottom',
 		'container' => true,
-		'content' => BB::read('Twb.layout.footer.content')
-	), BB::read('Twb.layout.footer.config', array())));
+		'content' => BB::read('Twb.layout.footbar.content')
+	), BB::read('Twb.layout.footbar.config', array())));
 }

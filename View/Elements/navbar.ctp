@@ -51,7 +51,7 @@ if (!isset($responsive)) {
 // ----------------------- //
 
 $logo = BB::extend(array(
-	'href' => '',
+	'href' => '/',
 	'title' => '',
 	'show' => '',
 	'image' => '',
@@ -61,6 +61,7 @@ $logo = BB::extend(array(
 	'imageOptions' => array()
 ), BB::set($logo, 'show'));
 
+// Logo as Link
 if (!empty($logo['href'])) {
 	
 	if (!empty($logo['image'])) {
@@ -80,9 +81,10 @@ if (!empty($logo['href'])) {
 		'title' => $logo['title'],
 		'content' => $logo['content']
 	), BB::setDefaultAttrsId($logo['linkOptions']));
-	
+
+// Logo as Simple Text
 } else {
-	$logo = null;
+	$logo = $logo['show'];
 }
 
 
@@ -149,10 +151,19 @@ if ($responsive) {
 if ($container) {
 	if (is_bool($container)) $container = array();
 	
+	// intercept "fluid" request for the navbar
+	if ($container === 'fluid') {
+		$container = array('fluid' => true);
+	} else {
+		$container = BB::setDefaultAttrsId($container);
+	}
+	
 	// overrides default "row" child for container!
 	$container = BB::extend(array('defaults' => array()), $container);
-	$container['defaults']['$__xtag'] = null;
+	#$container['defaults']['$__xtag'] = null; // -tbr?20130307
 	
+	// creates a container with plain text contents.
+	if (is_array($content)) $content = $this->Html->tag($content);
 	$content = $this->Twb->container($content, $container);
 }
 
