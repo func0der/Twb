@@ -32,7 +32,7 @@ class TwbDropdownHelper extends AppHelper {
 			));
 			
 			$li = array(
-				'$++class' => ' dropdown',
+				'class' => ' dropdown',
 				'content' => array(
 					$link,
 					array(

@@ -22,8 +22,10 @@ if (!isset($logo)) {
 	$logo = null;
 }
 
-// @TODO
-if (!isset($menu)) {$menu = null;}
+// [array] tree structure of links
+if (!isset($menu)) {
+	$menu = null;
+}
 
 // [true|top|bottom] - to create a fixed toolbar. true = top
 if (!isset($fixed)) {
@@ -98,13 +100,32 @@ if (!empty($logo['href'])) {
 // ---[[   M A I N   M E N U   ]]--- //
 // --------------------------------- //
 
-if (!empty($menu)) {
-	$menu = $this->Html->tag(array(
+/**
+ * main menu should be a raw string or an array composed by two keys:
+ * - position: [left|right] optional, set the "pull" behavior for the menu
+ * - items: array, Tree data.
+ * 
+ * it is built as list of Twb dropdown components.
+ */
+
+if (!empty($menu) && is_array($menu)) {
+	
+	$cfg = BB::extend(array(
+		'position' => 'right',
+		'class' => ''
+	), BB::setDefaultAttrsId(BB::read('Twb.layout.config.menu')));
+	
+	// build class extension names
+	$cfg['$++class'] = ' pull-' . $cfg['position'] . ' ' . $cfg['class'];
+	unset($cfg['position']);
+	unset($cfg['class']);
+	
+	$menu = $this->Html->tag(BB::extend(array(
 		'xtag' => 'list',
-		'class' => 'nav pull-right',
+		'class' => 'nav ',
 		'items' => $menu,
 		'content' => 'TwbDropdownHelper::itemCallback'
-	));
+	), $cfg));
 }
 
 

@@ -21,8 +21,12 @@
 		 * SEO Meta Tags
 		 */
 		echo $this->Html->tag('title', BB::read('Twb.meta.title'));
-		echo $this->Html->meta('description', BB::read('Twb.meta.description', BB::read('Twb.meta.title')));
-		echo $this->Html->meta('keywords', BB::read('Twb.meta.keywords'));
+		if (BB::check('Twb.meta.description')) {
+			echo $this->Html->meta('description', BB::read('Twb.meta.description', BB::read('Twb.meta.title')));
+		}
+		if (BB::check('Twb.meta.keywords')) {
+			echo $this->Html->meta('keywords', BB::read('Twb.meta.keywords'));
+		}
 		
 		/**
 		 * Favicon
@@ -58,10 +62,15 @@
 		/**
 		 * Analitycs
 		 */
-		if ($this->elementExists('google_analitycs')) {
-			echo $this->element('google_analitycs');
-		} else {
-			echo BB::read('Twb.analytics');
+		// custom element
+		if ($this->elementExists('analitycs')) {
+			echo $this->element('analitycs');
+		// Twb element with GA ID
+		} elseif (BB::check('Twb.analytics')) {
+			// to implement standard traking code by GA-ID
+			$this->append('script', $this->element('Twb.analytics', array(
+				'ga' => BB::read('Twb.analytics')
+			)));
 		}
 		?>
 		
