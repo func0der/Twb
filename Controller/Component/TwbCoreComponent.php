@@ -23,6 +23,19 @@ class TwbCoreComponent extends Component {
 			$Controller->layout = 'Twb.default';
 		}
 		
-	}	
+		
+		
+	}
+	
+	/**
+	 * Alias FormHelper only if a Twb layout is used
+	 */
+	public function beforeRender(Controller $Controller) {
+		if (substr($Controller->layout, 0, 4) === 'Twb.') {
+			$Controller->helpers = BB::extend($Controller->helpers, array(
+				'Form' => array('className' => 'Twb.TwbForm')
+			));
+		}
+	}
 	
 }
