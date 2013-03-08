@@ -98,7 +98,14 @@ if (!empty($logo['href'])) {
 // ---[[   M A I N   M E N U   ]]--- //
 // --------------------------------- //
 
-$menu = null;
+if (!empty($menu)) {
+	$menu = $this->Html->tag(array(
+		'xtag' => 'list',
+		'class' => 'nav pull-right',
+		'items' => $menu,
+		'content' => 'TwbDropdownHelper::itemCallback'
+	));
+}
 
 
 
@@ -164,7 +171,7 @@ if ($container) {
 	
 	// creates a container with plain text contents.
 	if (is_array($content)) $content = $this->Html->tag($content);
-	$content = $this->Twb->container($content, $container);
+	$content = $this->TwbLayout->container($content, $container);
 }
 
 

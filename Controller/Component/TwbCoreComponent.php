@@ -13,6 +13,10 @@ class TwbCoreComponent extends Component {
 		
 		// Extend app helpers with plugin's base helpers
 		$Controller->helpers[] = 'Twb.Twb';
+		$Controller->helpers[] = 'Twb.TwbLayout';
+		$Controller->helpers[] = 'Twb.TwbTypo';
+		$Controller->helpers[] = 'Twb.TwbLink';
+		$Controller->helpers[] = 'Twb.TwbDropdown';
 		
 		// Setup default layout
 		if ($Controller->layout === 'default') {

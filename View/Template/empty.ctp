@@ -17,7 +17,7 @@ if ($this->elementExists('navbar')) {
 		'container' => true,
 		'responsive' => true,
 		'logo' => BB::read('Twb.layout.navbar.logo'),
-		'menu' => BB::read('Twb.layout.navbar.menu'),
+		'menu' => BB::read('Twb.layout.navbar.menu', BbMenu::tree('Twb.navbar')),
 		'content' => BB::read('Twb.layout.navbar.content')
 	), BB::read('Twb.layout.navbar.config', array())));
 }
