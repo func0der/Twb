@@ -53,18 +53,19 @@
 		 * LayoutJS
 		 */
 		$this->Html->script(array(
-			'Twb.compiled/jquery-1.9.0.min',
-			'Twb.compiled/bootstrap.min'
+			'Twb.compiled/jquery-1.9.0',
+			'Twb.compiled/bootstrap',
+			'Twb.twb-core'
 		), false);
 		
 		echo $this->fetch('css');
 		
 		/**
-		 * Analitycs
+		 * Analytics
 		 */
 		// custom element
-		if ($this->elementExists('analitycs')) {
-			echo $this->element('analitycs');
+		if ($this->elementExists('analytics')) {
+			echo $this->element('analytics');
 		// Twb element with GA ID
 		} elseif (BB::check('Twb.analytics')) {
 			// to implement standard traking code by GA-ID
