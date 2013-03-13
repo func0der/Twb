@@ -261,17 +261,16 @@ class TwbFormHelper extends FormHelper {
 	}
 	
 	
+	/**
+	 * Implement generic form input field following form's style.
+	 */
 	public function input($name = '', $options = array()) {
 		
-		// string options converted to label
-		$options = BB::setDefaults($options, array(
-			'label' => array()
-		), 'label');
+		if (!empty($options['type']) && $options['type'] == 'checkbox') {
+			return $this->checkbox($name, $options);
+		}
 		
-		// string label converted to array configuration
-		$options['label'] = BB::setDefaults($options['label'], null, 'text');
-		
-		// apply helper options
+		$options = $this->_labelOptions($options);
 		$options = $this->_helperOptions($options);
 		
 		// apply form's type based variations
@@ -287,19 +286,113 @@ class TwbFormHelper extends FormHelper {
 		return parent::input($name, BB::extend($this->_inputDefaults, $options));
 	}
 	
+	public function checkbox($fieldName, $options = array()) {
+		
+		// apply label defaults
+		$options = $this->_labelOptions($options);
+		
+		// apply defaults
+		$options = BB::extend(array(
+			'type' => 'checkbox',
+			'value' => 1,
+			'values' => array(),
+			'inline' => false
+		), $options);
+		
+		
+		// input wrapper options:
+		$_options = BB::extend(BB::clear($options, array(
+			'value',
+			'values',
+			'inline',
+			'helper',
+		), false), array(
+			'type' => 'text'
+		));
+		
+		// multiple checkboxes
+		$items = '';
+		if (!empty($options['values'])) {
+			foreach ($options['values'] as $itemName=>$config) {
+				
+				// apply defaults for label text to display near field
+				$config = BB::setDefaults($config, array(
+					'label' => ''
+				), 'label');
+				
+				// export checkbox label
+				$itemLabel = $config['label'];
+				unset($config['label']);
+				if (empty($itemLabel)) {
+					$itemLabel = $itemName;
+				}
+				
+				// extends item's config with wide control configuration
+				// setup single checkout value
+				$config = BB::extend(BB::clear($options, array('values', 'inline')), $config);
+				$config = $this->_helperOptions($config);
+				
+				// create checkbox control with label
+				$items.= $this->Html->tag(array(
+					'tag' => 'label',
+					'class' => 'checkbox' . ($options['inline']?' inline':''),
+					'data-toggle-checkbox' => 'on',
+					'content' => array(
+						parent::checkbox($itemName, $config),
+						$itemLabel
+					)
+				));
+			}
+		
+		// single checkbox
+		} else {
+			$options = $this->_helperOptions($options);
+			$items = parent::checkbox($fieldName, $options);
+		}
+		
+		// generate input wrapper code and fill with checkbox core
+		$field = $this->input($fieldName, $_options);
+		preg_match_all("|<input(.*)/>|U", $field, $matches);
+		return str_replace( $matches[0][0], $items, $field );
+	}
+	
+	
+	
+	protected function _labelOptions($options) {
+		// string options converted to label
+		$options = BB::setDefaults($options, array(
+			'label' => array()
+		), 'label');
+		
+		// string label converted to array configuration
+		$options['label'] = BB::setDefaults($options['label'], null, 'text');
+		
+		return $options;
+	}
 	
 	
 	/**
 	 * Inject popover helper attributes into configuration
 	 */
-	public function _helperOptions($options) {
+	protected function _helperOptions($options) {
 		if (array_key_exists('helper', $options)) {
+			
+			$trigger = 'focus';
+			if (!empty($options['type']) && in_array($options['type'], array('checkbox', 'radio', 'select'))) {
+				$trigger.= ' hover';
+			}
+			
+			$position = 'right';
+			if (!empty($options['type']) && in_array($options['type'], array('checkbox', 'radio', 'select'))) {
+				$position = $this->type == 'horizontal' ? 'top' : 'right';
+			}
+			
 			// helper defaults
 			$helper = BB::setDefaults($options['helper'], array(
 				'title'		=> '',
 				'content'	=> '',
-				'position'	=> 'right',
-				'trigger'	=> 'focus'
+				'position'	=> $position,
+				'trigger'	=> $trigger
 			), 'content');
 			
 			// fetch title from content's text
