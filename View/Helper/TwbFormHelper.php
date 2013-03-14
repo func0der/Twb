@@ -274,7 +274,7 @@ class TwbFormHelper extends FormHelper {
 		
 		if (!empty($options['type']) && $options['type'] == 'radio') {
 			$options = BB::extend(array('options' => array()), $options);
-			return $this->checkbox($name, $options['options'], BB::clear($options, 'options'));
+			return $this->radio($name, $options['options'], BB::clear($options, 'options'));
 		}
 		
 		$options = $this->_labelOptions($options);
