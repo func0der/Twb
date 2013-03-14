@@ -270,6 +270,11 @@ class TwbFormHelper extends FormHelper {
 			return $this->checkbox($name, $options);
 		}
 		
+		if (!empty($options['type']) && $options['type'] == 'radio') {
+			$options = BB::extend(array('options' => array()), $options);
+			return $this->checkbox($name, $options['options'], BB::clear($options, 'options'));
+		}
+		
 		$options = $this->_labelOptions($options);
 		$options = $this->_helperOptions($options);
 		
@@ -286,6 +291,10 @@ class TwbFormHelper extends FormHelper {
 		return parent::input($name, BB::extend($this->_inputDefaults, $options));
 	}
 	
+	
+	/**
+	 * Custom Checkbox
+	 */
 	public function checkbox($fieldName, $options = array()) {
 		
 		// apply label defaults
@@ -293,17 +302,17 @@ class TwbFormHelper extends FormHelper {
 		
 		// apply defaults
 		$options = BB::extend(array(
-			'type' => 'checkbox',
-			'value' => 1,
-			'values' => array(),
-			'inline' => false
+			'type'		=> 'checkbox',
+			'value'		=> 1,
+			'options'	=> array(),
+			'inline'	=> false
 		), $options);
 		
 		
 		// input wrapper options:
 		$_options = BB::extend(BB::clear($options, array(
 			'value',
-			'values',
+			'options',
 			'inline',
 			'helper',
 		), false), array(
@@ -312,36 +321,50 @@ class TwbFormHelper extends FormHelper {
 		
 		// multiple checkboxes
 		$items = '';
-		if (!empty($options['values'])) {
-			foreach ($options['values'] as $itemName=>$config) {
+		if (!empty($options['options'])) {
+			foreach ($options['options'] as $itemName=>$config) {
 				
 				// apply defaults for label text to display near field
 				$config = BB::setDefaults($config, array(
-					'label' => ''
-				), 'label');
+					'text' => ''
+				), 'text');
 				
-				// export checkbox label
-				$itemLabel = $config['label'];
-				unset($config['label']);
-				if (empty($itemLabel)) {
-					$itemLabel = $itemName;
+				// export checkbox text
+				$itemText = $config['text'];
+				unset($config['text']);
+				if (empty($itemText)) {
+					$itemText = $itemName;
+				}
+				
+				if (is_numeric($itemName)) {
+					$itemName = $itemText;
 				}
 				
 				// extends item's config with wide control configuration
 				// setup single checkout value
-				$config = BB::extend(BB::clear($options, array('values', 'inline')), $config);
+				$config = BB::extend(BB::clear($options, array('options', 'inline')), $config);
 				$config = $this->_helperOptions($config);
 				
+				// find control's ID to apply "label for" attribute
+				$itemControl = parent::checkbox($itemName, $config);
+				$itemControlId = '';
+				$matches = '';
+				preg_match_all("|id=\"(.*)\"|U", $itemControl, $matches);
+				if (!empty($matches[1][1])) $itemControlId = $matches[1][1];
+				
 				// create checkbox control with label
-				$items.= $this->Html->tag(array(
+				$item = $this->Html->tag(array(
 					'tag' => 'label',
+					'for' => $itemControlId,
 					'class' => 'checkbox' . ($options['inline']?' inline':''),
 					'data-toggle-checkbox' => 'on',
 					'content' => array(
-						parent::checkbox($itemName, $config),
-						$itemLabel
+						$itemControl,
+						$itemText
 					)
 				));
+				
+				$items.= $item;
 			}
 		
 		// single checkbox
@@ -355,6 +378,104 @@ class TwbFormHelper extends FormHelper {
 		preg_match_all("|<input(.*)/>|U", $field, $matches);
 		return str_replace( $matches[0][0], $items, $field );
 	}
+	
+	
+	/**
+	 * Custom Radio
+	 */
+	public function radio($fieldName, $options = array(), $attributes = array()) {
+		
+		// apply custom label as second string param (shortcut)
+		if (is_string($options)) {
+			$attributes = $options;
+			$options = array();
+		}
+		
+		// internal naming conventions normalization
+		// method declaration must be compatible to parent class (PHP 5.4)
+		$values = $options;
+		$options = $attributes;
+		
+		// apply label defaults
+		$options = $this->_labelOptions($options);
+		
+		
+		// apply defaults
+		$options = BB::extend(array(
+			'type' => 'radio',
+			'inline' => false
+		), $options);
+		
+		
+		// input wrapper options:
+		$_options = BB::extend(BB::clear($options, array(
+			'inline',
+			'helper',
+		), false), array(
+			'type' => 'text'
+		));
+		
+		// default value for single radio button
+		if (empty($values)) {
+			$values = array($fieldName => $fieldName);
+		}
+		
+		// build CakePHP compliant value array from rich Twb definition
+		// compatible form.
+		$_values = array();
+		foreach ($values as $key=>$val) {
+			if (is_array($val)) {
+				$val = BB::extend(array(
+					'text' => $key
+				), $val);
+				$values[$key] = $val;
+				
+			} else {
+				$val = array('text' => $val);
+				$values[$key] = $val;
+			}
+			if (is_numeric($key)) {
+				$_values[$val['text']] = $val['text'];
+			} else {
+				$_values[$key] = $val['text'];
+			}
+		}
+		
+		// build original radio fields list
+		$radio = $radio = parent::radio($fieldName, $_values, array(
+			'legend' 	=> false,
+			'separator' => '--**--'
+		));
+		
+		// modify markup to fit Twb requirements
+		$items = '';
+		$keys = array_keys($values);
+		foreach (explode('--**--', $radio) as $i=>$radio) {
+			preg_match_all("|<label(.*)>|U", $radio, $matches);
+			$radio = str_replace( $matches[0][0], '', $radio );
+			$radio = $matches[0][0] . $radio;
+			
+			// compose helper attributes
+			$helper_attrs = '';
+			if (!empty($values[$keys[$i]]['helper'])) {
+				foreach ($this->_helperOptions(array('type' => 'radio', 'helper' => $values[$keys[$i]]['helper'])) as $attrName=>$attrVal) {
+					$helper_attrs.= $attrName.'="'.$attrVal.'" ';
+				}
+			}
+			
+			// apply class and inline attribute
+			$radio = str_replace('<label', '<label class="radio' . ($options['inline']===true?' inline':'') . '" ', $radio);
+			$radio = str_replace('<input ', '<input ' . $helper_attrs, $radio);
+			
+			$items.= $radio;
+		}
+		
+		// generate input wrapper code and fill with checkbox core
+		$field = $this->input($fieldName, $_options);
+		preg_match_all("|<input(.*)/>|U", $field, $matches);
+		return str_replace( $matches[0][0], $items, $field );
+	}
+	
 	
 	
 	
