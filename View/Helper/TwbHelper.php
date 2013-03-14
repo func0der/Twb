@@ -11,7 +11,8 @@ class TwbHelper extends BbHtmlHelper {
 		'Twb.TwbDropdown',
 		'Twb.TwbLayout',
 		'Twb.TwbLink',
-		'Twb.TwbTypo'
+		'Twb.TwbTypo',
+		'Form'
 	);
 	
 	/**
@@ -30,6 +31,10 @@ class TwbHelper extends BbHtmlHelper {
 		BB::registerXtag('linkbtn',		array($this, 'xtagLinkBtn'));
 		BB::registerXtag('btngroup',	array($this, 'xtagBtnGroup'));
 		BB::registerXtag('thumb',		array($this, 'xtagThumb'));
+		
+		// forms
+		BB::registerXtag('form',		array($this, 'xtagForm'));
+		BB::registerXtag('input',		array($this, 'xtagInput'));
 		
 	}
 	
@@ -195,6 +200,128 @@ class TwbHelper extends BbHtmlHelper {
 			case 'options' : return array($name, $text, $options);
 			case 'beforeRender' : return $this->TwbLink->btnGroup($text, BB::clear($options, 'xtag'));
 		}
+	}
+	
+	
+	
+	
+	public function xtagForm($mode, $name, $text, $options) {
+		
+		$options = BB::extend(array(
+			'model' => '',
+			'end' => 'Save',
+			'sections' => array(),
+			'fields' => array()
+		), $options);
+		
+		// extract create() options
+		$_create = BB::clear($options, array(
+			'model',
+			'end',
+			'xtag',
+			'fields',
+			'sections'
+		));
+		
+		// prepare form content as a list of tags to be rendered
+		if (BB::isAssoc($text)) {
+			$text = array($text);
+		}
+		
+		// append form sections to be rendered
+		if (!empty($options['sections'])) {
+			foreach($options['sections'] as $sectionId=>$sectionFields) {
+				if (is_numeric($sectionId)) {
+					$sectionId = uniqid('form-') . '-' . $sectionId;
+				}
+				if (is_array($sectionFields)) {
+					$sectionFields = BB::extend(array(
+						'legend' => $sectionId,
+						'options' => array()
+					), $sectionFields);
+					$sectionName = $sectionFields['legend'];
+					$sectionOptions = $sectionFields['options'];
+					unset($sectionFields['legend']);
+					unset($sectionFields['options']);
+				} else {
+					$sectionName = $sectionId;
+					$sectionOptions = array();
+				}
+				
+				$sectionContent = BB::extend(array(array(
+					'tag' => 'legend',
+					'show' => $sectionName
+				)), $this->_xtagFormFields($sectionFields));
+				
+				$text[] = BB::extend(array(
+					'tag' => 'fieldset',
+					'id' => $sectionId,
+					'content' => $sectionContent
+				), $sectionOptions);
+				
+				
+			}
+		}
+		
+		// append wide fields fields
+		if (!empty($options['fields'])) {
+			$text = BB::extend($text, $this->_xtagFormFields($options['fields']));
+		}
+		
+		$code = $this->Form->create($options['model'], $_create);
+		$code.= $this->tag($text);
+		$code.= $this->Form->end($options['end']);
+		
+		return $code;
+	}
+	
+	
+	/**
+	 * translate a list of fields or a string into a list of tag() configure
+	 * array.
+	 * 
+	 * $fields = 'field1, field2'
+	 * $fields = array('field1', 'field2')
+	 * $fields = array(
+	 *	'field1' => 'label',
+	 *  'field2' => array(
+	 *    'type' => 'checkbox',
+	 *    'label' => 'Field Label'
+	 *  )
+	 * )
+	 */
+	protected function _xtagFormFields($fields) {
+		
+		if (is_string($fields)) {
+			$fields = explode(',', $fields);
+		}
+		
+		$list = array();
+		foreach ($fields as $name=>$cfg) {
+			if (is_numeric($name)) {
+				$name = $cfg;
+				$cfg = array();
+			}
+			$cfg = BB::setDefaults($cfg, array(
+				'xtag' => 'input',
+				'name' => $name
+			), 'label');
+			$list[] = $cfg;
+		}
+		return $list;
+	}
+	
+	public function xtagInput($mode, $name, $text, $options) {
+		
+		$options = BB::extend(array(
+			'name' => ''
+		), $options);
+		
+		return $this->Form->input($options['name'], BB::clear($options, array(
+			'xtag',
+			'name'
+		)));
+		
 	}
 	
 	

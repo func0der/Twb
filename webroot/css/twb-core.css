@@ -16,9 +16,21 @@
 .form-standard .control-group.error .help-inline {
   font-size: .8em;
 }
+.form-standard fieldset {
+  margin-bottom: 2em;
+}
+.form-standard fieldset legend {
+  margin-bottom: 0;
+}
 .form-horizontal .control-group label {
   font-size: .95em;
 }
 .form-horizontal .control-group.error .help-inline {
   display: none;
+}
+.form-horizontal fieldset {
+  margin-bottom: 2em;
+}
+.form-horizontal fieldset legend {
+  margin-bottom: 0;
 }
