@@ -31,8 +31,7 @@ class TwbFormHelper extends FormHelper {
 		// apply "novalidate" options to prevent HTML5 validation
 		if ($options['validate'] === false) {
 			$options['novalidate'] = true;
-		}
-		unset($options['validate']);
+		} unset($options['validate']);
 		
 		
 		switch ($options['type']) {
@@ -69,7 +68,10 @@ class TwbFormHelper extends FormHelper {
 				), $options['inputDefaults']);
 				break;
 			
+			case 'standard':
 			default:
+				$this->type = 'standard';
+				$options['class'] = trim('form-standard ' . $options['class']);
 				$options['inputDefaults'] = BB::extend(array(
 					'div' => array(
 						'class' => 'control-group'
@@ -319,6 +321,19 @@ class TwbFormHelper extends FormHelper {
 			'type' => 'text'
 		));
 		
+		
+		// style fix
+		// standard's form single checkbox display itself inline without
+		// control's label!
+		if ($this->type === 'standard' && empty($options['options'])) {
+			$options['options'] = array($options['value'] => array(
+				'text' => !empty($options['label']['text'])?$options['label']['text']:$fieldName,
+				'helper' => !empty($options['helper'])?$options['helper']:''
+			));
+			$_options['label'] = false;
+		}
+		
+		
 		// multiple checkboxes
 		$items = '';
 		if (!empty($options['options'])) {
@@ -397,6 +412,8 @@ class TwbFormHelper extends FormHelper {
 		$options = $attributes;
 		
 		// apply label defaults
+		// "true" options = inline
+		if ($options === true) $options = array('inline' => true);
 		$options = $this->_labelOptions($options);
 		
 		

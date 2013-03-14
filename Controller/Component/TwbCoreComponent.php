@@ -11,6 +11,9 @@ class TwbCoreComponent extends Component {
 			$Controller->helpers[] = 'Markdown.Markdown';
 		}
 		
+		// need a Less compiler to compile Twb's LESS sources!
+		$Controller->helpers[] = 'BB.BbLess';
+		
 		// Extend app helpers with plugin's base helpers
 		$Controller->helpers[] = 'Twb.Twb';
 		$Controller->helpers[] = 'Twb.TwbLayout';

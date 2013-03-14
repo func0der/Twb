@@ -1,0 +1,62 @@
+/**
+ * Twb Plugin
+ * main adaptive style
+ */
+
+
+
+
+
+// ----------------------------------------- //
+// ---[[   F O R M   S T A N D A R D   ]]--- //
+// ----------------------------------------- //
+
+.form-standard {
+	.control-group {
+		
+		margin-bottom:1em;
+		
+		label {
+			margin-bottom: 3px;
+			font-size:.95em;
+		}
+		.controls {
+			line-height: 1em;
+			min-height: 20px;
+			margin-bottom:0;
+			
+			input {
+				margin-bottom:0;
+			}
+		}
+		
+		&.error .help-inline {
+			font-size:.8em;
+		}
+		
+	}
+}
+
+
+
+// --------------------------------------------- //
+// ---[[   F O R M   H O R I Z O N T A L   ]]--- //
+// --------------------------------------------- //
+
+.form-horizontal {
+	.control-group {
+		
+		label {
+			font-size:.95em;
+		}
+		
+		/**
+		 * hide form's error messages
+		 * (they are replaced by tooltips!)
+		 */
+		&.error .help-inline {
+			display:none;
+		}
+		
+	}	
+}

@@ -46,7 +46,8 @@
 		 */
 		$this->Html->css(array(
 			'Twb.compiled/bootstrap.min',
-			'Twb.compiled/bootstrap-responsive.min'
+			'Twb.compiled/bootstrap-responsive.min',
+			'Twb.twb-core'
 		), false);
 		
 		/**

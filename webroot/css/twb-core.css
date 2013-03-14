@@ -1,0 +1,24 @@
+.form-standard .control-group {
+  margin-bottom: 1em;
+}
+.form-standard .control-group label {
+  margin-bottom: 3px;
+  font-size: .95em;
+}
+.form-standard .control-group .controls {
+  line-height: 1em;
+  min-height: 20px;
+  margin-bottom: 0;
+}
+.form-standard .control-group .controls input {
+  margin-bottom: 0;
+}
+.form-standard .control-group.error .help-inline {
+  font-size: .8em;
+}
+.form-horizontal .control-group label {
+  font-size: .95em;
+}
+.form-horizontal .control-group.error .help-inline {
+  display: none;
+}
