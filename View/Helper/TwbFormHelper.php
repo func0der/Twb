@@ -332,7 +332,7 @@ class TwbFormHelper extends FormHelper {
 		// standard's form single checkbox display itself inline without
 		// control's label!
 		if ($this->type === 'standard' && empty($options['options'])) {
-			$options['options'] = array($options['value'] => array(
+			$options['options'] = array($fieldName => array(
 				'text' => !empty($options['label']['text'])?$options['label']['text']:$fieldName,
 				'helper' => !empty($options['helper'])?$options['helper']:''
 			));
