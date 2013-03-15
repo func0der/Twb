@@ -12,7 +12,8 @@ class TwbHelper extends BbHtmlHelper {
 		'Twb.TwbLayout',
 		'Twb.TwbLink',
 		'Twb.TwbTypo',
-		'Form'
+		'Form',
+		'Session'
 	);
 	
 	/**
@@ -36,8 +37,9 @@ class TwbHelper extends BbHtmlHelper {
 		BB::registerXtag('form',		array($this, 'xtagForm'));
 		BB::registerXtag('input',		array($this, 'xtagInput'));
 		
+		// setup custom element for flash messages
+		$this->Session->setFlashFallbackElement('Twb.flash/{key}');
 	}
-	
 	
 	
 
@@ -257,7 +259,7 @@ class TwbHelper extends BbHtmlHelper {
 					'tag' => 'fieldset',
 					'id' => $sectionId,
 					'content' => $sectionContent
-				), $sectionOptions);
+				), BB::setDefaultAttrs($sectionOptions));
 				
 				
 			}

@@ -136,6 +136,12 @@ class TwbFormHelper extends FormHelper {
 							'name' => 'form-action-save',
 						);
 						break;
+					case 'saveexit':
+						$action = array(
+							'value' => __('save and exit'),
+							'name' => 'form-action-save-and-exit',
+						);
+						break;
 					case 'exit':
 						$action = array(
 							'value' => __('save and exit'),

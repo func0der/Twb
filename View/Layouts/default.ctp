@@ -79,6 +79,7 @@
 	</head>
 	<body>
 		<?php
+		
 		// Page content
 		echo $this->fetch('content');
 		
