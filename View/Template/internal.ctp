@@ -5,7 +5,6 @@
  */
 $this->extend('Twb.Template/container');
 
-
 /**
  * One Column Content
  */

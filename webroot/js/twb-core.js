@@ -24,7 +24,9 @@ window.Twb = {};
 	 */
 	$(document).ready(function() {
 		Twb.formInputPopover();
-		Twb.formErrorsTooltip($('.form-horizontal'));
+		
+		Twb.formErrorsHandling('.form-standard,.form-horizontal');
+		Twb.formErrorsTooltip('.form-horizontal');
 	});
 	
 	
@@ -39,45 +41,63 @@ window.Twb = {};
 	};
 	
 	/**
+	 * Removes form error styles when focus on fields
+	 */
+	Twb.formErrorsHandling = function(form) {
+		var $form = $(form);
+		var _clearFieldError = function($control) {
+			// hide error message (preserve control's height)
+			$control.find('.help-inline:hidden').remove();
+			$control.find('.help-inline:visible').each(function() {
+				$control.css('min-height', $control.outerHeight());
+				$(this).fadeOut(function(){$(this).remove()});
+			});
+			// remove error status class
+			setTimeout(function() {
+				$control.removeClass('error');
+				$control.find('.form-error').removeClass('form-error');
+			}, 300);
+		}
+		$form.find('.control-group.error').each(function() {
+			var $this = $(this);
+			// bind clear error
+			$this.bind('click', function(){
+				_clearFieldError($this);
+			});
+			$this.find('input, select').bind('focus', function() {
+				_clearFieldError($this);
+			});
+		});
+	}
+	
+	/**
 	 * intercepts form errors messages and transform into tooltips
 	 * form error status is removed when field gets focus
 	 */
-	Twb.formErrorsTooltip = function($form) {
-		
-		var _clearFieldError = function($control, $tooltipHandler) {
-			$tooltipHandler.tooltip('hide');
-			$control.removeClass('error');
-			$control.find('.form-error').removeClass('form-error');
-		};
-		
-		$form.find('.control-group.error').each(function() {
+	Twb.formErrorsTooltip = function(form) {
+		$(form).find('.control-group.error').each(function() {
 			var $this = $(this);
 			var $tooltipHandler = $('<span>');
 			var $msg = $this.find('.help-inline').hide().after($tooltipHandler);
-			var msg = $msg.text();
 			
 			// attach tooltip & show
 			$tooltipHandler.attr('data-toggle', 'tooltip')
 				.attr('data-placement', 'right')
-				.attr('title', msg)
+				.attr('title', $msg.text())
 				.tooltip('show');
 			
 			// apply custom style
-			//$this.find('.tooltip-arrow').css('border-right-color', '#900');
-			//$this.find('.tooltip-inner').css('background-color', '#900');
 			$tooltipHandler.tooltipColor('#900');
 			
 			// bind clear error login
 			$this.bind('click', function(){
-				_clearFieldError($this, $tooltipHandler);
+				$tooltipHandler.tooltip('hide');
 			});
 			
 			$this.find('input, select').bind('focus', function() {
-				_clearFieldError($this, $tooltipHandler);
+				$tooltipHandler.tooltip('hide');
 			});
-			
 		});
-		
 	};
 	
 	
