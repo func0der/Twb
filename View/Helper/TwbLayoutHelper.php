@@ -44,7 +44,7 @@ class TwbLayoutHelper extends AppHelper {
 		$options = BB::extend(array(
 			'defaults' => array(
 				'xtag' => 'row',
-				'fluid' => ($base_class === 'container-fluid')
+				'fixed' => ($base_class != 'container-fluid')
 			),
 		), $options);
 		
@@ -60,14 +60,15 @@ class TwbLayoutHelper extends AppHelper {
 		// true/flase to render or return full array configuration
 		if (is_bool($options)) $options['render'] = $options;
 		
-		// intercept the "fluid" param given to the container
-		$base_class = 'row';
-		if ($options === 'fluid') {
-			$base_class = 'row-fluid';
+		// intercept the "fixed" param given to the container
+		// by default a row is fluid
+		$base_class = 'row-fluid';
+		if ($options === 'fixed') {
+			$base_class = 'row';
 			$options = array();
-		} elseif (isset($options['fluid']) && $options['fluid']) {
-			$base_class = 'row-fluid';
-			unset($options['fluid']);
+		} elseif (isset($options['fixed']) && $options['fixed']) {
+			$base_class = 'row';
+			unset($options['fixed']);
 		}
 		
 		$options = BB::setDefaultAttrsId($options, array(
