@@ -46,7 +46,7 @@
 		 */
 		$this->Html->css(array(
 			#'Twb.compiled/bootstrap.min',
-			'Twb.themed/united.min',
+			'Twb.themed/spacelab.min',
 			'Twb.compiled/bootstrap-responsive.min',
 			'Twb./js/3rd/notify/notify',
 			'Twb.twb-core'
