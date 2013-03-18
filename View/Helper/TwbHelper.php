@@ -33,6 +33,8 @@ class TwbHelper extends BbHtmlHelper {
 		BB::registerXtag('btngroup',	array($this, 'xtagBtnGroup'));
 		BB::registerXtag('thumb',		array($this, 'xtagThumb'));
 		
+		BB::registerXtag('table',		array($this, 'xtagTable'));
+		
 		// forms
 		BB::registerXtag('form',		array($this, 'xtagForm'));
 		BB::registerXtag('input',		array($this, 'xtagInput'));
@@ -204,6 +206,18 @@ class TwbHelper extends BbHtmlHelper {
 		}
 	}
 	
+	public function xtagTable($mode, $name, $text, $options) {
+		
+		$options = BB::extend(array(
+			'helper' => 'Twb.TwbTable',
+			'data' => array()
+		), $options);
+		
+		$tableHelper = $this->_View->loadHelper($options['helper']);
+		$data = $options['data'];
+		
+		return $tableHelper->render($data, BB::clear($options, array('xtag', 'helper', 'data')));
+	}
 	
 	
 	

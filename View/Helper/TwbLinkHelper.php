@@ -19,12 +19,15 @@ class TwbLinkHelper extends AppHelper {
 		$options = BB::extend(array(
 			'icon' => '',
 			'icon-right' => false,
-			'icon-white' => false
+			'icon-white' => false,
+			'icon-only' => false
 		), BB::set($options, 'icon'));
 		
 		if (!empty($options['icon'])) {
 			$icon = $this->TwbTypo->icon($options['icon'], $options['icon-white']);
-			if ($options['icon-right']) {
+			if ($options['icon-only']) {
+				$show = $icon;
+			} elseif ($options['icon-right']) {
 				$show .= ' ' . $icon;
 			} else {
 				$show = $icon . ' ' . $show;
@@ -32,7 +35,7 @@ class TwbLinkHelper extends AppHelper {
 			$options['escape'] = false;
 		}
 		
-		$options = BB::clear($options, array('icon', 'icon-right', 'icon-size', 'icon-white'));
+		$options = BB::clear($options, array('icon', 'icon-right', 'icon-size', 'icon-white', 'icon-only'));
 		return $this->Html->link($show, $url, $options);
 		
 	}
@@ -60,7 +63,8 @@ class TwbLinkHelper extends AppHelper {
 			'block' => false,
 			'icon' => '',
 			'icon-right' => false,
-			'icon-white' => false
+			'icon-white' => false,
+			'icon-only' => false
 		), $options, array(
 			'$++class' => 'btn'
 		));
@@ -79,7 +83,9 @@ class TwbLinkHelper extends AppHelper {
 		
 		if (!empty($options['icon'])) {
 			$icon = $this->TwbTypo->icon($options['icon'], $options['icon-white']);
-			if ($options['icon-right']) {
+			if ($options['icon-only']) {
+				$show = $icon;
+			} elseif ($options['icon-right']) {
 				$show .= ' ' . $icon;
 			} else {
 				$show = $icon . ' ' . $show;
@@ -87,7 +93,7 @@ class TwbLinkHelper extends AppHelper {
 			$options['escape'] = false;
 		}
 		
-		$options = BB::clear($options, array('type', 'size', 'block', 'icon', 'icon-right', 'icon-size', 'icon-white'));
+		$options = BB::clear($options, array('type', 'size', 'block', 'icon', 'icon-right', 'icon-size', 'icon-white', 'icon-only'));
 		return $this->Html->link($show, $url, $options);
 	}
 	
