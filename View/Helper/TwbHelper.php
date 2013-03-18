@@ -35,6 +35,8 @@ class TwbHelper extends BbHtmlHelper {
 		
 		BB::registerXtag('table',		array($this, 'xtagTable'));
 		
+		BB::registerXtag('pageheader',	array($this, 'xtagPageHeader'));
+		
 		// forms
 		BB::registerXtag('form',		array($this, 'xtagForm'));
 		BB::registerXtag('input',		array($this, 'xtagInput'));
@@ -207,19 +209,23 @@ class TwbHelper extends BbHtmlHelper {
 	}
 	
 	public function xtagTable($mode, $name, $text, $options) {
-		
 		$options = BB::extend(array(
 			'helper' => 'Twb.TwbTable',
 			'data' => array()
 		), $options);
-		
+		// load table helper
 		$tableHelper = $this->_View->loadHelper($options['helper']);
-		$data = $options['data'];
-		
-		return $tableHelper->render($data, BB::clear($options, array('xtag', 'helper', 'data')));
+		// render
+		return $tableHelper->render($options['data'], BB::clear($options, array('xtag', 'helper', 'data')));
 	}
 	
-	
+	public function xtagPageHeader($mode, $name, $text, $options) {
+		$options = BB::extend(array(
+			'title' => '',
+			'actions' => array()
+		), $options);
+		return $this->TwbLayout->pageHeader($options['title'], $options['actions'], BB::clear($options, array('xtag', 'title', 'actions')));
+	}
 	
 	public function xtagForm($mode, $name, $text, $options) {
 		

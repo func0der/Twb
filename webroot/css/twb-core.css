@@ -1,3 +1,9 @@
+.noty_text h4 {
+  margin: 0px;
+  font-size: 1.2em;
+  text-transform: lowercase;
+  font-variant: small-caps;
+}
 .form-standard .control-group {
   margin-bottom: 1em;
 }

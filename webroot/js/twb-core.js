@@ -23,13 +23,140 @@ window.Twb = {};
 	 * jQuery Ready - Launcher
 	 */
 	$(document).ready(function() {
-		Twb.formInputPopover();
 		
+		// handle notification messages
+		Twb.noty.init();
+		
+		Twb.formInputPopover();
+		Twb.formStaticActions('#twb-main-form');
 		Twb.formErrorsHandling('.form-standard,.form-horizontal');
 		Twb.formErrorsTooltip('.form-horizontal');
+				
 	});
 	
 	
+	
+	
+	
+	
+	
+	
+	// look at:
+	// http://pinesframework.org/pnotify/
+	
+	Twb.noty = {
+		success: function(msg) {
+			if ($.notify) {
+				$.notify.success(msg, {
+					autoClose: 5000,
+					close: true
+				});
+			} else if (window.noty) {
+				window.noty({
+					text: msg,
+					type: 'success',
+					layout: 'bottomRight'
+				});
+			}
+		},
+		error: function(msg) {
+			if ($.notify) {
+				$.notify.error(msg, {
+					autoClose: 5000,
+					close: true
+				});
+			} else if (window.noty) {
+				window.noty({
+					text: msg,
+					type: 'error',
+					layout: 'bottomRight'
+				});
+			}
+		},
+		warning: function(msg) {
+			if ($.notify) {
+				$.notify.alert(msg, {
+					autoClose: 5000,
+					close: true
+				});
+			} else if (window.noty) {
+				window.noty({
+					text: msg,
+					type: 'warning',
+					layout: 'bottomRight'
+				});
+			}
+		},
+		info: function(msg) {
+			if ($.notify) {
+				$.notify.basic(msg, {
+					autoClose: 5000,
+					close: true
+				});
+			} else if (window.noty) {
+				window.noty({
+					text: msg,
+					type: 'information',
+					layout: 'bottomRight'
+				});
+			}
+		},
+		
+		init: function() {
+			$('.alert').each(function() {
+				var $this = $(this).hide();
+				$this.find('button').remove();
+				
+				if ($this.hasClass('alert-error')) {
+					Twb.noty.error($this.html());
+				} else if ($this.hasClass('alert-success')) {
+					Twb.noty.success($this.html());
+				} else if ($this.hasClass('alert-warning')) {
+					Twb.noty.warning($this.html());
+				} else if ($this.hasClass('alert-info')) {
+					Twb.noty.info($this.html());
+				}
+				
+			});
+		}
+	};
+	
+	
+	
+	
+	
+	
+	
+	
+// --------------------------------------------- //
+// ---[[   F O R M   M A N A G E M E N T   ]]--- //	
+// --------------------------------------------- //
+	
+	/**
+	 * Staticize form's action buttons at the bottom of the visible page
+	 */
+	Twb.formStaticActions = function(form) {
+		var $form = $(form);
+		var $actions = $form.find('.form-actions');
+		
+		var _offsetBottom = 0;
+		var $footer = $('.navbar-fixed-bottom');
+		if ($footer.length) {
+			_offsetBottom = $footer.outerHeight(true);
+		}
+		
+		var onResize = function() {
+			$actions.css({
+				position: 'fixed',
+				left:0,
+				margin:0,
+				top: $(window).height() - (_offsetBottom + $actions.outerHeight()),
+				width: $(window).outerWidth()
+			});	
+		};
+		$(window).resize(onResize);
+		onResize();
+	};
 	
 	/**
 	 * activates form input's popover helper
@@ -99,6 +226,30 @@ window.Twb = {};
 			});
 		});
 	};
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+
+
+
+
+
+
+
+
+// ----------------------------- //
+// ---[[   P L U G I N S   ]]--- //	
+// ----------------------------- //
 	
 	
 	/**

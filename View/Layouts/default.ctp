@@ -45,8 +45,10 @@
 		 * LayoutCSS
 		 */
 		$this->Html->css(array(
-			'Twb.compiled/bootstrap.min',
+			#'Twb.compiled/bootstrap.min',
+			'Twb.themed/united.min',
 			'Twb.compiled/bootstrap-responsive.min',
+			'Twb./js/3rd/notify/notify',
 			'Twb.twb-core'
 		), false);
 		
@@ -56,6 +58,17 @@
 		$this->Html->script(array(
 			'Twb.compiled/jquery-1.9.0',
 			'Twb.compiled/bootstrap',
+			
+			/*
+			// noty plugin
+			'Twb.3rd/noty/jquery.noty',
+			'Twb.3rd/noty/layouts/bottomRight',
+			'Twb.3rd/noty/themes/twb',
+			*/
+			
+			// notify plugin
+			'Twb.3rd/notify/notify',
+			
 			'Twb.twb-core'
 		), false);
 		

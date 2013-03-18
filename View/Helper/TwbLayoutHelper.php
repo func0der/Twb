@@ -157,7 +157,90 @@ class TwbLayoutHelper extends AppHelper {
 		return $this->_View->element('Twb.navbar', $options);
 	}
 
-
+	
+	/**
+	 * compose a page header block with title, subtitle and action buttons
+	 */
+	public function pageHeader($title = '', $actions = array(), $options = array()) {
+		$options = BB::extend(array(
+			'title'		=> $title,
+			'subtitle'	=> '',
+			'actions'	=> $actions,
+			'groupActions' => true,
+			'actionOptions' => array()
+		), BB::setDefaultAttrs($options));
+		
+		// split title and subtitle by simple string pattern
+		if (strpos($options['title'], '>>') !== false) {
+			list($options['title'], $options['subtitle']) = explode('>>', $options['title']);
+		}
+		
+		// setup base class
+		$options['class'] = trim('page-header twb-page-header ' . $options['class']);
+		
+		// setup title
+		$title = $this->Html->tag(array(
+			'tag' => 'h1',
+			'content' => array(
+				$options['title'],
+				' ',
+				array(
+					'tag' => 'small',
+					'content' => $options['subtitle']
+				)
+			)
+		));
+		
+		// render a list of actions
+		if (is_array($actions)) {
+			ob_start();
+			foreach ($actions as $actionName=>$actionConfig) {
+				if (is_numeric($actionName)) {
+					$actionName = $actionConfig;
+				}
+				if (!is_array($actionConfig)) {
+					$actionConfig = array(
+						'show' => $actionName,
+						'title' => $actionName,
+						'href' => array('action' => $actionConfig)
+					);
+				}
+				$actionConfig = BB::extend(array(
+					'xtag' => 'linkbtn',
+					'show' => $actionName,
+					'href' => array('action' => $actionName)
+				), $actionConfig);
+				echo $this->Html->tag($actionConfig);
+			}
+			$actions = ob_get_clean();
+		}
+		
+		// apply button group wrapper
+		if ($options['groupActions']) {
+			$actions = $this->Html->tag(array(
+				'class' => 'btn-group',
+				'content' => $actions
+			));
+		}
+		
+		// title structure
+		return $this->Html->tag(BB::extend(array(
+			'content' => array(
+				BB::extend(array(
+					'class' => 'pull-right',
+					'content' => $actions
+				), BB::setDefaultAttrs($options['actionOptions'])),
+				$title,
+			)
+		), BB::clear($options, array(
+			'title',
+			'subtitle',
+			'actions',
+			'groupActions',
+			'actionOptions'
+		))));
+	}
+	
 	
 	
 	/**
