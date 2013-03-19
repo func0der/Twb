@@ -23,15 +23,22 @@ class TwbFormHelper extends FormHelper {
 			'type' => '',
 			'class' => '',
 			'sticky' => true,
+			'ajax' => true,
 			'inputDefaults' => array(),
 		), array(
 			'boolean' => 'validate',
 			'else' => 'type'
 		));
 		
+		// sticky form data-option
 		if ($options['sticky'] === true) {
-			$options['id'] = 'twb-sticky-form';
+			$options['data-twb-sticky'] = 'on';
 		} unset($options['sticky']);
+		
+		// ajax form data-option
+		if ($options['ajax'] === true) {
+			$options['data-twb-ajax'] = 'on';
+		} unset($options['ajax']);
 		
 		// apply "novalidate" options to prevent HTML5 validation
 		if ($options['validate'] === false) {

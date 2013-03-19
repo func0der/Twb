@@ -60,11 +60,17 @@
 			'Twb.twb-core'
 		), false);
 		
-		/**
-		 * pNotify Plugin
-		 */
+		// pNotify Plugin
 		$this->Html->css('Twb./js/3rd/pnotify-1.2.0/jquery.pnotify.default', array('inline' => false, 'prepend' => false));
 		$this->Html->script('Twb.3rd/pnotify-1.2.0/jquery.pnotify.min', array('inline' => false, 'prepend' => false));
+		
+		// form plugin
+		$this->Html->script('Twb.3rd/jquery.form', array('inline' => false, 'prepend' => false));
+		
+		// MediaTable Plugin
+		$this->Html->css('Twb./js/3rd/mediatable/jquery.mediatable', array('inline' => false, 'prepend' => false));
+		$this->Html->script('Twb.3rd/mediatable/jquery.mediatable', array('inline' => false, 'prepend' => false));
+		
 		
 		echo $this->fetch('css');
 		

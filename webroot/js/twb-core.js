@@ -34,6 +34,10 @@ window.Twb = {};
 		Twb.formInputPopover();
 		Twb.formErrorsHandling('.form-standard,.form-horizontal');
 		Twb.formErrorsTooltip('.form-horizontal');
+		Twb.formAjax('form[data-twb-ajax=on]');
+		
+		// init media table plugin for configured tables
+		Twb.mediaTable();
 				
 	});
 	
@@ -54,7 +58,7 @@ window.Twb = {};
 		if (!$.support.cssFloat) return;
 		
 		var $top = $('#twb-sticky-pageheader');
-		var $bottom = $('#twb-sticky-form .form-actions');
+		var $bottom = $('form[data-twb-sticky=on] .form-actions');
 		
 		// initialize pageheader
 		if ($top.length) {
@@ -106,29 +110,41 @@ window.Twb = {};
 	// look at:
 	// http://pinesframework.org/pnotify/
 	Twb.msg = {
+		show: function(cfg) {
+			cfg = cfg || {};
+			cfg = $.extend({},{
+				title: 	'',
+				text: 	'',
+				type: 	'info'
+			},cfg);
+			if (!cfg.text.length) {
+				return;
+			}
+			$.pnotify(cfg);
+		},
 		success: function(text, title) {
-			$.pnotify({
+			Twb.msg.show({
 				title: 	title,
 				text: 	text,
 				type: 	'success'
 			});
 		},
 		error: function(text, title) {
-			$.pnotify({
+			Twb.msg.show({
 				title: 	title,
 				text: 	text,
 				type: 	'error'
 			});
 		},
 		warning: function(text, title) {
-			$.pnotify({
+			Twb.msg.show({
 				title: 	title,
 				text: 	text,
-				hide: false
+				type:	'alert'
 			});
 		},
 		info: function(text, title) {
-			$.pnotify({
+			Twb.msg.show({
 				title: 	title,
 				text: 	text,
 				type: 	'info',
@@ -141,9 +157,12 @@ window.Twb = {};
 			$.pnotify.defaults.history = false;
 			$.pnotify.defaults.sticker = false;
 			$.pnotify.defaults.icon = false;
+			$.pnotify.defaults.animation = 'slide';
 			$.pnotify.defaults.addclass = 'pnotify-stack-bottom-right';
-			$.pnotify.defaults.stack = {"dir1": "up", "dir2": "left", "push": "top"};
-			$.pnotify.defaults.animate_speed = 'normal';
+			$.pnotify.defaults.cornerclass = 'ui-pnotify-sharp';
+			$.pnotify.defaults.stack = {"dir1": "up", "dir2": "left", "push": "bottom"};
+			$.pnotify.defaults.animate_speed = 'fast';
+			$.pnotify.defaults.opacity = 0.85;
 			// convert session messages into notifications
 			$('.alert').each(function() {
 				var $this = $(this).hide();
@@ -255,6 +274,47 @@ window.Twb = {};
 		});
 	};
 	
+	/**
+	 * Submit forms via AJAX
+	 */
+	Twb.formAjax = function(form) {
+		$(form).each(function() {
+			var $form = $(this);
+			$form.ajaxForm({
+				dataType: 'json',
+				success: function(data) {
+					
+					data = $.extend({},{
+						ajax: {
+							msg: null,
+							title: null
+						}
+					},data);
+					
+					// apply notification based on given "type"
+					// or fallback to generic waring message.
+					if (typeof Twb.msg[data.ajax.type] == 'function') {
+						Twb.msg[data.ajax.type].call(this, data.ajax.text, data.ajax.title);
+					} else {
+						Twb.msg.warning(data.ajax.text, data.ajax.title);
+					}
+					
+					// apply redirect - if required by ajax response object
+					if (data.ajax.redirect) {
+						setTimeout(function() {
+							Twb.msg.info('please wait while redirecting');
+							location.href = data.ajax.redirect;
+						}, 700);
+					}
+				},
+				// ajax error - disable ajax form
+				error: function() {
+					Twb.msg.error("AJAX request could not be solved!<br>Sending form the standard way...", "AJAX Error:");
+					//$form.unbind('submit').submit();
+				}
+			});
+		});
+	};
 	
 	
 	
@@ -262,6 +322,17 @@ window.Twb = {};
 	
 	
 	
+	
+// ---[[ MEDIA TABLE PLUGIN ]]--- //
+	Twb.mediaTable = function() {
+		var cfg = {
+			menuTitle: '<i class="icon-chevron-down pull-right" style="margin-top:4px"></i> Colonne Visibili:'
+		};
+		$('table[data-responsive=on]').mediaTable(cfg);
+		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+			$('table[data-responsive=mobile]').mediaTable(cfg);	
+		}
+	};
 	
 	
 	

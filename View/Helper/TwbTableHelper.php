@@ -8,12 +8,14 @@ App::uses('BbTableHelper', 'BB.View/Helper');
 class TwbTableHelper extends BbTableHelper {
 	
 	public $defaults = array(
-		'class'			=> 'table',
-		'customClass'	=> '',
-		'bordered'		=> true,
-		'striped'		=> true,
-		'hover'			=> true,
-		'condensed'		=> false
+		'class'					=> 'table',
+		'customClass'			=> '',
+		'bordered'				=> true,
+		'striped'				=> true,
+		'hover'					=> true,
+		'condensed'				=> false,
+		'responsive'			=> 'id',
+		'responsiveOnMobile'	=> true
 	);
 	
 	
@@ -36,12 +38,14 @@ class TwbTableHelper extends BbTableHelper {
 		
 		// apply styled options available to configure table
 		$options = BB::extend(array(
-			'class'		=> $this->defaults['class'],
-			'bordered'	=> $this->defaults['bordered'],
-			'striped'	=> $this->defaults['striped'],
-			'hover'		=> $this->defaults['hover'],
-			'condensed' => $this->defaults['condensed'],
-			'customClass' => ''
+			'class'					=> $this->defaults['class'],
+			'bordered'				=> $this->defaults['bordered'],
+			'striped'				=> $this->defaults['striped'],
+			'hover'					=> $this->defaults['hover'],
+			'condensed'				=> $this->defaults['condensed'],
+			'customClass'			=> '',
+			'responsive'			=> $this->defaults['responsive'],
+			'responsiveOnMobile'	=> $this->defaults['responsiveOnMobile']
 		), $options);
 		
 		if ($options['bordered']) {
@@ -57,16 +61,50 @@ class TwbTableHelper extends BbTableHelper {
 			$options['class'] .= ' table-condensed';
 		}
 		
+		// prepare responsive options
+		$this->_setupResponsive($options['responsive']);
+		if ($this->_responsive !== false) $options['data-responsive'] = 'on';
+		if ($options['responsiveOnMobile']) $options['data-responsive'] = 'mobile';
+		
 		$options['class'] = trim($options['class'] . ' ' . $options['customClass']);
 		$options = BB::clear($options, array(
 			'bordered',
 			'striped',
 			'hover',
 			'condensed',
-			'customClass'
+			'customClass',
+			'responsive',
+			'responsiveOnMobile'
 		), false);
 		
 		return parent::render($data, $options);	
+	}
+	
+	
+	/**
+	 * Apply responsive classes to each column before to render it
+	 */
+	public function renderThead() {
+		if ($this->_responsive !== false) {
+			foreach ($this->_responsive as $area=>$columns) {
+				if ($area == 'persist') $area = 'essential persist';
+				foreach ($columns as $columnName) {
+					// add model to the column's name
+					if (strpos($columnName, '.') === false && $columnName !== 'actions') {
+						$columnName = $this->model . '.' . $columnName;
+					}
+					if (!empty($this->columns[$columnName])) {
+						$columnConfig = BB::extend(array(
+							'thead' => array('class' => '')
+						), $this->columns[$columnName]);
+						
+						$columnConfig['thead']['class'] = trim($columnConfig['thead']['class'] . ' ' . $area);
+						$this->columns[$columnName] = $columnConfig;
+					}
+				}
+			}
+		}
+		return parent::renderThead();
 	}
 	
 	
@@ -226,6 +264,54 @@ class TwbTableHelper extends BbTableHelper {
 		
 		$options['href'] = $this->actionUrl($options['href'], $row, $idx);
 		return $this->Html->tag($options);
+	}
+	
+	
+	
+	
+	
+	/**
+	 * Fill a correct "responsive" configuration
+	 */
+	protected function _setupResponsive($options) {
+		
+		// string2array for main key definition
+		if (is_string($options)) {
+			$tmp = explode(',', $options);
+			$options = array('essential' => array());
+			foreach ($tmp as $columnName) {
+				$options['essential'][] = trim($columnName);
+			}
+		}
+		
+		$options = BB::extend(array(
+			'persist'	=> array(),
+			'essential' => array(),
+			'optional'	=> array()
+		), $options);
+		
+		// string2array for every area
+		foreach ($options as $key=>$val) {
+			if (is_string($val)) {
+				$tmp = explode(',', $val);
+				$val = array();
+				foreach ($tmp as $columnName) {
+					$val[] = trim($columnName);
+				}
+				$options[$key] = $val;
+			}
+		}
+		
+		// store into internal property to be used at rendering time
+		$tmp = BB::clear($options);
+		if (!empty($tmp)) {
+			// actions column is always required for the table!
+			$options['persist'][] = 'actions';
+			$this->_responsive = $options;
+		} else {
+			$this->_responsive = false;
+		}
+		
 	}
 	
 }
