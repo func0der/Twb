@@ -25,10 +25,13 @@ window.Twb = {};
 	$(document).ready(function() {
 		
 		// handle notification messages
-		Twb.noty.init();
+		Twb.msg.init();
 		
+		// make some UI components stiky
+		Twb.stickyUI();
+		
+		// init forms behaviors
 		Twb.formInputPopover();
-		Twb.formStaticActions('#twb-main-form');
 		Twb.formErrorsHandling('.form-standard,.form-horizontal');
 		Twb.formErrorsTooltip('.form-horizontal');
 				
@@ -41,80 +44,131 @@ window.Twb = {};
 	
 	
 	
+// --------------------------------- //
+// ---[[   S T I C K Y   U I   ]]--- //
+// --------------------------------- //
+	
+	Twb.stickyUI = function() {
+		
+		// disable stiky to IE!
+		if (!$.support.cssFloat) return;
+		
+		var $top = $('#twb-sticky-pageheader');
+		var $bottom = $('#twb-sticky-form .form-actions');
+		
+		// initialize pageheader
+		if ($top.length) {
+			var $ghost = $('<div>').html("&nbsp;").addClass('twb-sticky-ghost').css({
+				height:		$top.outerHeight(true)
+			});
+			$top.addClass('twb-sticky').after($ghost);
+			// move standard flash messages after ghost item!
+			if ($('#twb-flash-messages .alert').length) $ghost.after($('#twb-flash-messages .alert'));
+		}
+		
+		// initialize form actions
+		if ($bottom.length) {
+			$bottom.addClass('twb-sticky').after($('<div>').html("&nbsp;").addClass('twb-sticky-ghost').css({
+				height:		$bottom.outerHeight()
+			}));
+		}
+		
+		// window resize utility
+		var _onResize = function() {
+			var _w = $(window).outerWidth();
+			if ($top.length) $top.css({
+				width: 	_w,
+				top:	$('.navbar-fixed-top').length ? $('.navbar-fixed-top').outerHeight(true) : 0
+			});
+			if ($bottom.length) $bottom.css({
+				width: 	_w,
+				bottom: $('.navbar-fixed-bottom').length ? $('.navbar-fixed-bottom').outerHeight(true) : 0
+			});
+		}
+		
+		$(window).resize(_onResize);
+		_onResize();
+		
+	};
+	
+	
+	
+	
+	
+	
+	
+	
+	
+// ------------------------------------------------------------- //
+// ---[[   N O T I F I C A T I O N S   F R A M E W O R K   ]]--- //	
+// ------------------------------------------------------------- //
+	
 	// look at:
 	// http://pinesframework.org/pnotify/
-	
-	Twb.noty = {
-		success: function(msg) {
-			if ($.notify) {
-				$.notify.success(msg, {
-					autoClose: 5000,
-					close: true
-				});
-			} else if (window.noty) {
-				window.noty({
-					text: msg,
-					type: 'success',
-					layout: 'bottomRight'
-				});
-			}
+	Twb.msg = {
+		success: function(text, title) {
+			$.pnotify({
+				title: 	title,
+				text: 	text,
+				type: 	'success'
+			});
 		},
-		error: function(msg) {
-			if ($.notify) {
-				$.notify.error(msg, {
-					autoClose: 5000,
-					close: true
-				});
-			} else if (window.noty) {
-				window.noty({
-					text: msg,
-					type: 'error',
-					layout: 'bottomRight'
-				});
-			}
+		error: function(text, title) {
+			$.pnotify({
+				title: 	title,
+				text: 	text,
+				type: 	'error'
+			});
 		},
-		warning: function(msg) {
-			if ($.notify) {
-				$.notify.alert(msg, {
-					autoClose: 5000,
-					close: true
-				});
-			} else if (window.noty) {
-				window.noty({
-					text: msg,
-					type: 'warning',
-					layout: 'bottomRight'
-				});
-			}
+		warning: function(text, title) {
+			$.pnotify({
+				title: 	title,
+				text: 	text,
+				hide: false
+			});
 		},
-		info: function(msg) {
-			if ($.notify) {
-				$.notify.basic(msg, {
-					autoClose: 5000,
-					close: true
-				});
-			} else if (window.noty) {
-				window.noty({
-					text: msg,
-					type: 'information',
-					layout: 'bottomRight'
-				});
-			}
+		info: function(text, title) {
+			$.pnotify({
+				title: 	title,
+				text: 	text,
+				type: 	'info',
+				hide: false
+			});
 		},
 		
 		init: function() {
+			// pnotify defaults
+			$.pnotify.defaults.history = false;
+			$.pnotify.defaults.sticker = false;
+			$.pnotify.defaults.icon = false;
+			$.pnotify.defaults.addclass = 'pnotify-stack-bottom-right';
+			$.pnotify.defaults.stack = {"dir1": "up", "dir2": "left", "push": "top"};
+			$.pnotify.defaults.animate_speed = 'normal';
+			// convert session messages into notifications
 			$('.alert').each(function() {
 				var $this = $(this).hide();
 				$this.find('button').remove();
 				
+				// extract notice title
+				var $title, title = '';
+				$title = $this.find('h4');
+				if ($title.length) {
+					title = $title.text();
+					$title.remove();
+				}
+				
 				if ($this.hasClass('alert-error')) {
-					Twb.noty.error($this.html());
+					Twb.msg.error($this.text(), title);
+					
 				} else if ($this.hasClass('alert-success')) {
-					Twb.noty.success($this.html());
+					Twb.msg.success($this.text(), title);
+					
 				} else if ($this.hasClass('alert-warning')) {
-					Twb.noty.warning($this.html());
+					Twb.msg.warning($this.text(), title);
+					
 				} else if ($this.hasClass('alert-info')) {
-					Twb.noty.info($this.html());
+					Twb.msg.info($this.text(), title);
+					
 				}
 				
 			});
@@ -131,32 +185,6 @@ window.Twb = {};
 // --------------------------------------------- //
 // ---[[   F O R M   M A N A G E M E N T   ]]--- //	
 // --------------------------------------------- //
-	
-	/**
-	 * Staticize form's action buttons at the bottom of the visible page
-	 */
-	Twb.formStaticActions = function(form) {
-		var $form = $(form);
-		var $actions = $form.find('.form-actions');
-		
-		var _offsetBottom = 0;
-		var $footer = $('.navbar-fixed-bottom');
-		if ($footer.length) {
-			_offsetBottom = $footer.outerHeight(true);
-		}
-		
-		var onResize = function() {
-			$actions.css({
-				position: 'fixed',
-				left:0,
-				margin:0,
-				top: $(window).height() - (_offsetBottom + $actions.outerHeight()),
-				width: $(window).outerWidth()
-			});	
-		};
-		$(window).resize(onResize);
-		onResize();
-	};
 	
 	/**
 	 * activates form input's popover helper

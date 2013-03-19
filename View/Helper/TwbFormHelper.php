@@ -22,11 +22,16 @@ class TwbFormHelper extends FormHelper {
 			'validate' => false,
 			'type' => '',
 			'class' => '',
+			'sticky' => true,
 			'inputDefaults' => array(),
 		), array(
 			'boolean' => 'validate',
 			'else' => 'type'
 		));
+		
+		if ($options['sticky'] === true) {
+			$options['id'] = 'twb-sticky-form';
+		} unset($options['sticky']);
 		
 		// apply "novalidate" options to prevent HTML5 validation
 		if ($options['validate'] === false) {

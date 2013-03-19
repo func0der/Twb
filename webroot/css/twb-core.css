@@ -1,8 +1,14 @@
-.noty_text h4 {
-  margin: 0px;
-  font-size: 1.2em;
-  text-transform: lowercase;
-  font-variant: small-caps;
+.ui-pnotify.pnotify-stack-top-right {
+  top: 65px;
+  right: 25px;
+  bottom: auto;
+  left: auto;
+}
+.ui-pnotify.pnotify-stack-bottom-right {
+  bottom: 70px;
+  right: 25px;
+  top: auto;
+  left: auto;
 }
 .form-standard .control-group {
   margin-bottom: 1em;
@@ -39,4 +45,52 @@
 }
 .form-horizontal fieldset legend {
   margin-bottom: 0;
+}
+@media (max-width: 978px) {
+  .twb-sticky-ghost {
+    display: none;
+  }
+  .twb-sticky {
+    position: relative;
+    width: auto !important;
+    top: auto !important;
+    bottom: auto !important;
+  }
+}
+@media (min-width: 979px) {
+  .twb-sticky {
+    position: fixed;
+    left: 0;
+    margin: 0;
+  }
+  .twb-sticky-ghost {
+    display: block;
+  }
+  #twb-sticky-pageheader {
+    background: #F5F5F5;
+    background: rgba(240,240,240,0.9);
+    box-shadow: 0 0 8px #aaa;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-top: 1px;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #aaa;
+  }
+  #twb-sticky-pageheader h1 {
+    font-size: 1.2em;
+    margin: 0 10px 0px 20px;
+    text-shadow: 0 1px #fff;
+  }
+  #twb-sticky-pageheader .pull-right {
+    margin: 5px 20px 0 0;
+  }
+  .form-actions.twb-sticky {
+    box-shadow: 0 0 8px #aaa;
+    padding: 10px 0;
+    margin-bottom: -2px;
+    border-top: 1px solid #ccc;
+    text-align: center;
+    background: #fff;
+    background: rgba(255,255,255,0.8);
+  }
 }

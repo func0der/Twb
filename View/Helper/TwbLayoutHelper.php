@@ -167,8 +167,13 @@ class TwbLayoutHelper extends AppHelper {
 			'subtitle'	=> '',
 			'actions'	=> $actions,
 			'groupActions' => true,
-			'actionOptions' => array()
+			'actionOptions' => array(),
+			'sticky' => true
 		), BB::setDefaultAttrs($options));
+		
+		if ($options['sticky'] === true) {
+			$options['id'] = 'twb-sticky-pageheader';
+		} unset($options['sticky']);
 		
 		// split title and subtitle by simple string pattern
 		if (strpos($options['title'], '>>') !== false) {

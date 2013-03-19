@@ -11,6 +11,7 @@ $this->extend('Twb.Template/empty');
  */
 echo $this->Html->tag(array(
 	'xtag' => 'container',
+	'id' => 'twb-flash-messages',
 	'fluid' => BB::read('Twb.layout.container.fluid', BB::read('Twb.layout.fluid')),
 	'style' => 'margin-top:60px;margin-bottom:-60px',
 	'content' => $this->Session->flash()

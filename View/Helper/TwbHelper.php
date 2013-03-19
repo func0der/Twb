@@ -189,16 +189,10 @@ class TwbHelper extends BbHtmlHelper {
 	}
 	
 	public function xtagLinkBtn($mode, $name, $text, $options) {
-		switch ($mode) {
-			case 'options': 
-				$options = BB::extend(array('href' => ''), $options);
-				return array($name, $text, $options);
-			case 'render': 
-				$href = $options['href'];
-				$options = BB::clear($options, array('xtag', 'href'));
-				$options = BB::clear($options, array_keys($this->_tagInteralOptions));
-				return $this->TwbLink->linkBtn($text, $href, $options);
-		}
+		$href = $options['href'];
+		$options = BB::clear($options, array('xtag', 'href'));
+		$options = BB::clear($options, array_keys($this->_tagInteralOptions));
+		return $this->TwbLink->linkBtn($text, $href, $options);
 	}
 	
 	public function xtagBtnGroup($mode, $name, $text, $options) {
