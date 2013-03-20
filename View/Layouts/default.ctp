@@ -90,14 +90,36 @@
 		?>
 		
 	</head>
-	<body>
-		<?php
-		
-		// Page content
-		echo $this->fetch('content');
-		
-		// Page Javascript
-		echo $this->fetch('script');
-		?>
-	</body>
+
+	<?php
+	/**
+	 * Build Layout's Body TAG
+	 */
+	$bodyOptions = BB::setDefaultAttrs(BB::read('twb.layout.body'));
+	
+	/**
+	 * Disable UI Javascript behaviors
+	 */
+	if (BB::read('Twb.layout.disable.smartMsg') !== true) {
+		$bodyOptions['data-smartMsg'] = 'true';
+	}
+	if (BB::read('Twb.layout.disable.ajaxForm') !== true) {
+		$bodyOptions['data-ajaxForm'] = 'true';
+	}
+	if (BB::read('Twb.layout.disable.mediaTable') !== true) {
+		$bodyOptions['data-mediaTable'] = 'true';
+	}
+	if (BB::read('Twb.layout.disable.stickyUi') !== true) {
+		$bodyOptions['data-stickyUi'] = 'true';
+	}
+	
+	echo $this->Html->tag(BB::extend($bodyOptions, array(
+		'tag' => 'body',
+		'content' => array(
+			$this->fetch('content'),
+			$this->fetch('script')
+		)
+	)));
+	
+	?>
 </html>

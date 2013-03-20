@@ -281,13 +281,14 @@ class TwbLayoutHelper extends AppHelper {
 		
 		// compose image block
 		$image = null;
+		$imageOptions = BB::extend(array('style' => 'width:100%;height:auto;'), $imageOptions);
 		if (!empty($src)) $image = $this->Html->image($src, $imageOptions);
 		
 		// compose image link
 		if (!empty($href)) $image = $this->Html->tag(BB::extend(array(
 			'xtag' => 'link',
 			'href' => $href,
-			'show' => $image
+			'show' => $image,
 		), $linkOptions));
 		
 		$actions = array(

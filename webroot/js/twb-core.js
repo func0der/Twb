@@ -24,6 +24,17 @@ window.Twb = {};
 	 */
 	$(document).ready(function() {
 		
+		// Collect some flags about client configuration
+		Twb.is = {
+			mobile: 	/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent),
+			phone:		/iPhone|iPod/i.test(navigator.userAgent),
+			tablet:		/Android|webOS|iPad|BlackBerry/i.test(navigator.userAgent),
+			ios:		/iPhone|iPad|iPod/i.test(navigator.userAgent),
+			iphone:		/iPhone/i.test(navigator.userAgent),
+			ipad:		/iPad/i.test(navigator.userAgent),
+		};
+		
+		
 		// handle notification messages
 		Twb.msg.init();
 		
@@ -47,15 +58,20 @@ window.Twb = {};
 	
 	
 	
-	
 // --------------------------------- //
 // ---[[   S T I C K Y   U I   ]]--- //
 // --------------------------------- //
 	
 	Twb.stickyUI = function() {
 		
+		// prevent behavior by body data- attribute
+		if ($('body').attr('data-stickyUi') != 'true') return;
+		
 		// disable stiky to IE!
 		if (!$.support.cssFloat) return;
+		
+		// assign class to isolate CSS rules only if behavior is applied
+		$('html').addClass('twb-stickyUi');
 		
 		var $top = $('#twb-sticky-pageheader');
 		var $bottom = $('form[data-twb-sticky=on] .form-actions');
@@ -120,7 +136,16 @@ window.Twb = {};
 			if (!cfg.text.length) {
 				return;
 			}
-			$.pnotify(cfg);
+			// use standard "alert" on phones
+			if (Twb.is.phone) {
+				if (cfg.title.length) {
+					cfg.text = cfg.title.toUpperCase() + "\n" + cfg.text;
+				}
+				alert(cfg.text);
+			// use jQuery's plugin for big devices
+			} else {
+				$.pnotify(cfg);
+			}
 		},
 		success: function(text, title) {
 			Twb.msg.show({
@@ -152,7 +177,15 @@ window.Twb = {};
 			});
 		},
 		
+		
+		/**
+		 * fetch all "alert" messages and translate them to high level js messages
+		 */
 		init: function() {
+			
+			// prevent behavior by body data- attribute
+			if ($('body').attr('data-smartMsg') != 'true') return;
+			
 			// pnotify defaults
 			$.pnotify.defaults.history = false;
 			$.pnotify.defaults.sticker = false;
@@ -164,6 +197,7 @@ window.Twb = {};
 			$.pnotify.defaults.animate_speed = 'fast';
 			$.pnotify.defaults.opacity = 0.85;
 			// convert session messages into notifications
+			// @TODO: setup a delay between each notification?
 			$('.alert').each(function() {
 				var $this = $(this).hide();
 				$this.find('button').remove();
@@ -278,6 +312,10 @@ window.Twb = {};
 	 * Submit forms via AJAX
 	 */
 	Twb.formAjax = function(form) {
+		
+		// prevent behavior by body data- attribute
+		if ($('body').attr('data-ajaxForm') != 'true') return;
+		
 		$(form).each(function() {
 			var $form = $(this);
 			$form.ajaxForm({
@@ -290,6 +328,8 @@ window.Twb = {};
 							title: null
 						}
 					},data);
+					
+					console.log(data);
 					
 					// apply notification based on given "type"
 					// or fallback to generic waring message.
@@ -309,8 +349,10 @@ window.Twb = {};
 				},
 				// ajax error - disable ajax form
 				error: function() {
-					Twb.msg.error("AJAX request could not be solved!<br>Sending form the standard way...", "AJAX Error:");
-					//$form.unbind('submit').submit();
+					Twb.msg.error("AJAX request could not be solved!<br>Sending form the standard way now...", "AJAX Error:");
+					setTimeout(function() {
+						$form.unbind('submit').submit();	
+					}, 500);
 				}
 			});
 		});
@@ -325,11 +367,15 @@ window.Twb = {};
 	
 // ---[[ MEDIA TABLE PLUGIN ]]--- //
 	Twb.mediaTable = function() {
+		
+		// prevent behavior by body data- attribute
+		if ($('body').attr('data-mediaTable') != 'true') return;
+		
 		var cfg = {
 			menuTitle: '<i class="icon-chevron-down pull-right" style="margin-top:4px"></i> Colonne Visibili:'
 		};
 		$('table[data-responsive=on]').mediaTable(cfg);
-		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+		if (Twb.is.mobile) {
 			$('table[data-responsive=mobile]').mediaTable(cfg);	
 		}
 	};
