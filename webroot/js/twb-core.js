@@ -26,6 +26,7 @@ window.Twb = {};
 		
 		// Collect some flags about client configuration
 		Twb.is = {
+			ie:			!$.support.cssFloat,
 			mobile: 	/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent),
 			phone:		/iPhone|iPod/i.test(navigator.userAgent),
 			tablet:		/Android|webOS|iPad|BlackBerry/i.test(navigator.userAgent),
@@ -43,9 +44,9 @@ window.Twb = {};
 		
 		// init forms behaviors
 		Twb.formInputPopover();
-		Twb.formErrorsHandling('.form-standard,.form-horizontal');
+		Twb.formErrorsAction('.form-standard, .form-horizontal');
 		Twb.formErrorsTooltip('.form-horizontal');
-		Twb.formAjax('form[data-twb-ajax=on]');
+		Twb.ajaxForm('form[data-twb-ajax=on]');
 		
 		// init media table plugin for configured tables
 		Twb.mediaTable();
@@ -68,7 +69,7 @@ window.Twb = {};
 		if ($('body').attr('data-stickyUi') != 'true') return;
 		
 		// disable stiky to IE!
-		if (!$.support.cssFloat) return;
+		if (Twb.is.ie) return;
 		
 		// assign class to isolate CSS rules only if behavior is applied
 		$('html').addClass('twb-stickyUi');
@@ -183,8 +184,13 @@ window.Twb = {};
 		 */
 		init: function() {
 			
-			// prevent behavior by body data- attribute
+			// prevent behavior by body 
+			// - data- attribute
+			// - mobile devices
+			// - small screen resolution
 			if ($('body').attr('data-smartMsg') != 'true') return;
+			if (Twb.is.phone) return;
+			if ($(window).width() < 768) return;
 			
 			// pnotify defaults
 			$.pnotify.defaults.history = false;
@@ -248,10 +254,30 @@ window.Twb = {};
 		});
 	};
 	
+	Twb.setFormErrors = function(errors, form) {
+		var $form = $(form);
+		$.each(errors.fields, function(fid, msg) {
+			$field = $('#'+fid);
+			$group = $field.parents('.control-group');
+			if (!$group.hasClass('error')) {
+				$group.addClass('error');
+				$field.addClass('form-error');
+				if ($form.hasClass('form-horizontal')) {
+					$field.after($('<div>').addClass('help-inline').html(msg));
+				} else {
+					$field.parent().after($('<div>').addClass('help-inline').html(msg));
+				}
+			}
+		});
+		// apply field's behaviors
+		Twb.formErrorsAction(form);
+		if ($form.hasClass('form-horizontal')) Twb.formErrorsTooltip(form);
+	}
+	
 	/**
 	 * Removes form error styles when focus on fields
 	 */
-	Twb.formErrorsHandling = function(form) {
+	Twb.formErrorsAction = function(form) {
 		var $form = $(form);
 		var _clearFieldError = function($control) {
 			// hide error message (preserve control's height)
@@ -283,10 +309,13 @@ window.Twb = {};
 	 * form error status is removed when field gets focus
 	 */
 	Twb.formErrorsTooltip = function(form) {
+		if (Twb.is.ie) return;
 		$(form).find('.control-group.error').each(function() {
 			var $this = $(this);
 			var $tooltipHandler = $('<span>');
 			var $msg = $this.find('.help-inline').hide().after($tooltipHandler);
+			
+			$this.find('.tooltip, [data-toggle="tooltip"]').remove();
 			
 			// attach tooltip & show
 			$tooltipHandler.attr('data-toggle', 'tooltip')
@@ -311,7 +340,7 @@ window.Twb = {};
 	/**
 	 * Submit forms via AJAX
 	 */
-	Twb.formAjax = function(form) {
+	Twb.ajaxForm = function(form) {
 		
 		// prevent behavior by body data- attribute
 		if ($('body').attr('data-ajaxForm') != 'true') return;
@@ -329,7 +358,8 @@ window.Twb = {};
 						}
 					},data);
 					
-					console.log(data);
+					// display validation errors
+					if (data.formErrors) Twb.setFormErrors(data.formErrors, $form);
 					
 					// apply notification based on given "type"
 					// or fallback to generic waring message.
@@ -340,9 +370,10 @@ window.Twb = {};
 					}
 					
 					// apply redirect - if required by ajax response object
+					// (skip notification on phones!)
 					if (data.ajax.redirect) {
 						setTimeout(function() {
-							Twb.msg.info('please wait while redirecting');
+							if (!Twb.is.phone) Twb.msg.info('please wait while redirecting');
 							location.href = data.ajax.redirect;
 						}, 700);
 					}
@@ -357,6 +388,8 @@ window.Twb = {};
 			});
 		});
 	};
+	
+	
 	
 	
 	

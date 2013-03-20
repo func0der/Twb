@@ -1,3 +1,13 @@
+@media (max-width: 978px) {
+  .page-header {
+    margin-top: 0;
+    padding: 0;
+  }
+  .page-header h1 {
+    font-size: 1.4em;
+    margin: 0;
+  }
+}
 .ui-pnotify.pnotify-stack-top-right {
   top: 65px;
   right: 25px;
@@ -37,14 +47,14 @@
 .form-horizontal .control-group label {
   font-size: .95em;
 }
-.form-horizontal .control-group.error .help-inline {
-  display: none;
-}
 .form-horizontal fieldset {
   margin-bottom: 2em;
 }
 .form-horizontal fieldset legend {
   margin-bottom: 0;
+}
+html.good .form-horizontal .error .help-inline {
+  display: none;
 }
 @media (max-width: 978px) {
   .twb-stickyUi .twb-sticky-ghost {
@@ -101,4 +111,7 @@
     background: linear-gradient(to bottom,#e0f3fa 0%,#d8f0fc 50%,#b8e2f6 51%,#b6dffd 100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#e0f3fa',endColorstr='#b6dffd',GradientType=0);
   }
+}
+html.badie body {
+  display: none !important;
 }

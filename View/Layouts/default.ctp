@@ -6,7 +6,11 @@
 ?>
 
 <!DOCTYPE HTML>
-<html lang="en-US">
+<!--[if lt IE 7]> <html class="ie ie6 oldie badie it" lang="it"> <![endif]-->
+<!--[if IE 7]>    <html class="ie ie7 oldie badie it" lang="it"> <![endif]-->
+<!--[if IE 8]>    <html class="ie ie8 oldie it" lang="it"> <![endif]-->
+<!--[if IE 9]>    <html class="ie ie9 it" lang="it"> <![endif]-->
+<!--[if gt IE 9]><!--> <html class="good it" lang="it"> <!--<![endif]-->
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />

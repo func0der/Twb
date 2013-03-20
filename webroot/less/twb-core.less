@@ -6,6 +6,25 @@
 
 
 
+// ----------------------------------------- //
+// ---[[   U I   C O M P O N E N T S   ]]--- //
+// ----------------------------------------- //
+
+@media (max-width: 978px) {
+	.page-header {
+		margin-top:0;
+		padding:0;
+		h1 {
+			font-size:1.4em;
+			margin:0;
+		}
+	}
+}
+
+
+
+
+
 
 
 // ----------------------------------------- //
@@ -25,6 +44,10 @@
 	top: auto;
 	left: auto;
 }
+
+
+
+
 
 
 // ----------------------------------------- //
@@ -75,14 +98,6 @@
 		label {
 			font-size:.95em;
 		}
-		
-		/**
-		 * hide form's error messages
-		 * (they are replaced by tooltips!)
-		 */
-		&.error .help-inline {
-			display:none;
-		}	
 	}
 	
 	fieldset {
@@ -93,6 +108,14 @@
 	}
 }
 
+/**
+ * GoodBrowsers:
+ * hide form's error messages
+ * (they are replaced by tooltips!)
+ */
+html.good .form-horizontal .error .help-inline {
+	display:none;
+}
 
 
 
@@ -181,4 +204,12 @@
 
 }
 
+
+
+
+/**
+ * Hide all content for old IE browsers!
+ * hope a server side component redirects to a communication page who tell user to change browser!
+ */
+html.badie body {display:none !important;}
 
