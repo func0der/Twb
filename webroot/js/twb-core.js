@@ -85,6 +85,11 @@ window.Twb = {};
 			$top.addClass('twb-sticky').after($ghost);
 			// move standard flash messages after ghost item!
 			if ($('#twb-flash-messages .alert').length) $ghost.after($('#twb-flash-messages .alert'));
+			// add internal container to fit centered layout into sticky pageader
+			if (!$top.parents('.container-fluid').length) {
+				var $wrap = $('<div>').addClass('container').html($top.html());
+				$top.html('').append($wrap);
+			}
 		}
 		
 		// initialize form actions

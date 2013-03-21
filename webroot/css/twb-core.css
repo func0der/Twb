@@ -91,8 +91,23 @@ html.good .form-horizontal .error .help-inline {
     margin: 0 10px 0px 20px;
     text-shadow: 0 1px #fff;
   }
+  .twb-stickyUi #twb-sticky-pageheader h1 small {
+    font-size: .85em;
+    color: #888;
+    text-shadow: 0 1px #fff;
+  }
+  .twb-stickyUi #twb-sticky-pageheader h1 small:before {
+    content: "\00bb\00a0 ";
+    font-size: .8em;
+  }
   .twb-stickyUi #twb-sticky-pageheader .pull-right {
     margin: 5px 20px 0 0;
+  }
+  .twb-stickyUi #twb-sticky-pageheader .container h1 {
+    margin-left: 0;
+  }
+  .twb-stickyUi #twb-sticky-pageheader .container .pull-right {
+    margin-right: 0;
   }
   .twb-stickyUi .form-actions.twb-sticky {
     box-shadow: 0 0 8px #aaa;
