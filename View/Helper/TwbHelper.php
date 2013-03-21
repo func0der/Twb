@@ -189,6 +189,7 @@ class TwbHelper extends BbHtmlHelper {
 	}
 	
 	public function xtagLinkBtn($mode, $name, $text, $options) {
+		$options = BB::extend(array('href' => '/'), $options);
 		$href = $options['href'];
 		$options = BB::clear($options, array('xtag', 'href'));
 		$options = BB::clear($options, array_keys($this->_tagInteralOptions));

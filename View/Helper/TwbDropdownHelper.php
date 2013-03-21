@@ -19,8 +19,8 @@ class TwbDropdownHelper extends AppHelper {
 		
 		$link = BB::extend(array(
 			'xtag' => 'link',
-			'href' => $item['BbMenu']['url'],
-		), BB::clear($item['BbMenu'], array('url', 'active')));
+			'href' => $item['BbMenu']['href'],
+		), BB::clear($item['BbMenu'], array('href', 'active')));
 
 		// submenu presence
 		if (!empty($item['children'])) {
@@ -64,8 +64,8 @@ class TwbDropdownHelper extends AppHelper {
 		
 		$link = BB::extend(array(
 			'xtag' => 'link',
-			'href' => $item['BbMenu']['url'],
-		), BB::clear($item['BbMenu'], array('url', 'active')));
+			'href' => $item['BbMenu']['href'],
+		), BB::clear($item['BbMenu'], array('href', 'active')));
 
 		// submenu presence
 		if (!empty($item['children'])) {

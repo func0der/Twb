@@ -58,8 +58,8 @@ class TwbLinkHelper extends AppHelper {
 		}
 		
 		$options = BB::extend(array(
-			'type' => '',
-			'size' => '',
+			'type' => '',	// [primary|success|info|warning|danger|inverse|link]
+			'size' => '',	// [large|small|mini]
 			'block' => false,
 			'icon' => '',
 			'icon-right' => false,
