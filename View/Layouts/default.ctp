@@ -49,8 +49,8 @@
 		 * LayoutCSS
 		 */
 		$this->Html->css(array(
-			#'Twb.compiled/bootstrap.min',
-			'Twb.themed/spacelab.min',
+			'Twb.compiled/bootstrap.min',
+			#'Twb.themed/spacelab.min',
 			'Twb.compiled/bootstrap-responsive.min',
 			'Twb.twb-core'
 		), false);

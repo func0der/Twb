@@ -110,6 +110,16 @@ class TwbFormHelper extends FormHelper {
 	
 	/**
 	 * Close Form
+	 * handles multiple action buttons.
+	 * 
+	 * $options = 'save,exit,cancel'
+	 * $options = array('save', 'exit')
+	 * $options = array('save' => 'custom label')
+	 * $options = array(
+	 *		'action' => 'save, exit'
+	 * )
+	 * 
+	 * 
 	 */
 	public function end($options = null) {
 		
@@ -119,6 +129,9 @@ class TwbFormHelper extends FormHelper {
 		if (func_num_args() == 1) {
 			if (is_string($options)) {
 				$actions = BB::extend($actions, explode(',', $options));
+				$options = array();
+			} elseif (BB::isVector($options) || (BB::isAssoc($options) && !isset($options['actions']))) {
+				$actions = $options;
 				$options = array();
 			}
 			$options = BB::setDefaults($options, array(

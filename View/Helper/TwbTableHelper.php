@@ -191,7 +191,7 @@ class TwbTableHelper extends BbTableHelper {
 			}
 			
 			switch (strtolower($name)) {
-				case 'read':
+				case 'view':
 					$actions[] = $this->actionRead($config, $data['dataRow'], $data['dataIdx']);
 					break;
 				case 'edit':
@@ -199,6 +199,16 @@ class TwbTableHelper extends BbTableHelper {
 					break;
 				case 'delete':
 					$actions[] = $this->actionDelete($config, $data['dataRow'], $data['dataIdx']);
+					break;
+				// custom action link
+				default:
+					if (empty($config['href'])) return;
+					$config = BB::extend(array(
+						'xtag' => 'linkbtn',
+					), $config, array(
+						'href' => $this->actionUrl($config['href'], $data['dataRow'], $data['dataIdx'])
+					));
+					$actions[] = $this->Html->tag($config);
 					break;
 			}
 		}
