@@ -162,6 +162,20 @@ class TwbLayoutHelper extends AppHelper {
 	 * compose a page header block with title, subtitle and action buttons
 	 */
 	public function pageHeader($title = '', $actions = array(), $options = array()) {
+		
+		// full array configuration handler
+		if (is_array($title)) {
+			$title = BB::extend(array(
+				'title' => '',
+				'actions' => ''
+			), $title);
+			#ddebug($title['actions']);
+			return $this->pageHeader($title['title'], $title['actions'], BB::clear($title, array(
+				'title',
+				'actions'
+			)));
+		}
+		
 		$options = BB::extend(array(
 			'title'		=> $title,
 			'subtitle'	=> '',
@@ -198,6 +212,12 @@ class TwbLayoutHelper extends AppHelper {
 		
 		// render a list of actions
 		if (is_array($actions)) {
+			
+			// single action assoc array
+			if (isset($actions['href']) || isset($actions['show'])) {
+				$actions = array($actions);
+			}
+			
 			ob_start();
 			foreach ($actions as $actionName=>$actionConfig) {
 				if (is_numeric($actionName)) {
