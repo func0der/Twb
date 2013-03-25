@@ -221,7 +221,7 @@ class TwbTableHelper extends BbTableHelper {
 			'show'	=> __('view'),
 			'title' => __('view item'),
 			'href'	=> array(
-				'action' => 'read',
+				'action' => 'view',
 				$row[$this->model]['id']
 			)
 		), BB::setStyle($options, 'show'));
