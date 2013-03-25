@@ -271,11 +271,10 @@ class TwbTableHelper extends BbTableHelper {
 
 	public function actionCustomAction($name, $options, $row, $idx){
 		$lowerName = strtolower($name);
-
+		
 		$options = BB::extend(array(
 			'xtag'	=> 'linkbtn',
 			'icon'	=> $lowerName,
-			'icon-only' => true,
 			'size'	=> 'small',
 			'show'	=> __($lowerName),
 			'title' => __($lowerName . ' item'),
@@ -284,7 +283,7 @@ class TwbTableHelper extends BbTableHelper {
 				$row[$this->model]['id']
 			)
 		), BB::setStyle($options, 'show'));
-
+		
 		$options['href'] = $this->actionUrl($options['href'], $row, $idx);
 		return $this->Html->tag($options);
 	}
