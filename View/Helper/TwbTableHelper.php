@@ -192,23 +192,13 @@ class TwbTableHelper extends BbTableHelper {
 			
 			switch (strtolower($name)) {
 				case 'view':
-					$actions[] = $this->actionRead($config, $data['dataRow'], $data['dataIdx']);
+					$actions[] = $this->actionView($config, $data['dataRow'], $data['dataIdx']);
 					break;
 				case 'edit':
 					$actions[] = $this->actionEdit($config, $data['dataRow'], $data['dataIdx']);
 					break;
 				case 'delete':
 					$actions[] = $this->actionDelete($config, $data['dataRow'], $data['dataIdx']);
-					break;
-				// custom action link
-				default:
-					if (empty($config['href'])) return;
-					$config = BB::extend(array(
-						'xtag' => 'linkbtn',
-					), $config, array(
-						'href' => $this->actionUrl($config['href'], $data['dataRow'], $data['dataIdx'])
-					));
-					$actions[] = $this->Html->tag($config);
 					break;
 			}
 		}
@@ -219,7 +209,7 @@ class TwbTableHelper extends BbTableHelper {
 		));
 	}
 	
-	public function actionRead($options, $row, $idx) {
+	public function actionView($options, $row, $idx) {
 		$options = BB::extend(array(
 			'xtag'	=> 'linkbtn',
 			'icon'	=> 'file',
