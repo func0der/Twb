@@ -200,6 +200,9 @@ class TwbTableHelper extends BbTableHelper {
 				case 'delete':
 					$actions[] = $this->actionDelete($config, $data['dataRow'], $data['dataIdx']);
 					break;
+				default:
+					$actions[] = $this->actionCustomAction($name, $config, $data['dataRow'], $data['dataIdx']);
+					break;
 			}
 		}
 		
@@ -215,8 +218,8 @@ class TwbTableHelper extends BbTableHelper {
 			'icon'	=> 'file',
 			'icon-only' => true,
 			'size'	=> 'small',
-			'show'	=> __('read'),
-			'title' => __('read item'),
+			'show'	=> __('view'),
+			'title' => __('view item'),
 			'href'	=> array(
 				'action' => 'read',
 				$row[$this->model]['id']
@@ -262,6 +265,26 @@ class TwbTableHelper extends BbTableHelper {
 			)
 		), BB::setStyle($options, 'show'));
 		
+		$options['href'] = $this->actionUrl($options['href'], $row, $idx);
+		return $this->Html->tag($options);
+	}
+
+	public function actionCustomAction($name, $options, $row, $idx){
+		$lowerName = strtolower($name);
+
+		$options = BB::extend(array(
+			'xtag'	=> 'linkbtn',
+			'icon'	=> $lowerName,
+			'icon-only' => true,
+			'size'	=> 'small',
+			'show'	=> __($lowerName),
+			'title' => __($lowerName . ' item'),
+			'href'	=> array(
+				'action' => $lowerName,
+				$row[$this->model]['id']
+			)
+		), BB::setStyle($options, 'show'));
+
 		$options['href'] = $this->actionUrl($options['href'], $row, $idx);
 		return $this->Html->tag($options);
 	}
