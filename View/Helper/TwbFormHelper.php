@@ -328,6 +328,7 @@ class TwbFormHelper extends FormHelper {
 	/**
 	 * Custom Checkbox
 	 */
+	
 	public function checkbox($fieldName, $options = array()) {
 		
 		// apply label defaults
@@ -579,6 +580,22 @@ class TwbFormHelper extends FormHelper {
 			if (!empty($helper['trigger']))		$options['data-trigger']		= $helper['trigger'];
 		}
 		return BB::clear($options, 'helper', false);
+	}
+	
+	
+	
+	
+	
+	public function originalInput($fieldName, $options = array()) {
+		return parent::input($fieldName, $options);
+	}
+	
+	public function originalCheckbox($fieldName, $options = array()) {
+		return parent::checkbox($fieldName, $options);
+	}
+	
+	public function originalRadio($fieldName, $options = array(), $attributes = array()) {
+		return parent::radio($fieldName, $options, $attributes);
 	}
 	
 }
