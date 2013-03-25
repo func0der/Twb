@@ -192,7 +192,7 @@ class TwbTableHelper extends BbTableHelper {
 			
 			switch (strtolower($name)) {
 				case 'view':
-					$actions[] = $this->actionRead($config, $data['dataRow'], $data['dataIdx']);
+					$actions[] = $this->actionView($config, $data['dataRow'], $data['dataIdx']);
 					break;
 				case 'edit':
 					$actions[] = $this->actionEdit($config, $data['dataRow'], $data['dataIdx']);
@@ -200,15 +200,8 @@ class TwbTableHelper extends BbTableHelper {
 				case 'delete':
 					$actions[] = $this->actionDelete($config, $data['dataRow'], $data['dataIdx']);
 					break;
-				// custom action link
 				default:
-					if (empty($config['href'])) return;
-					$config = BB::extend(array(
-						'xtag' => 'linkbtn',
-					), $config, array(
-						'href' => $this->actionUrl($config['href'], $data['dataRow'], $data['dataIdx'])
-					));
-					$actions[] = $this->Html->tag($config);
+					$actions[] = $this->actionCustomAction($name, $config, $data['dataRow'], $data['dataIdx']);
 					break;
 			}
 		}
@@ -219,14 +212,14 @@ class TwbTableHelper extends BbTableHelper {
 		));
 	}
 	
-	public function actionRead($options, $row, $idx) {
+	public function actionView($options, $row, $idx) {
 		$options = BB::extend(array(
 			'xtag'	=> 'linkbtn',
 			'icon'	=> 'file',
 			'icon-only' => true,
 			'size'	=> 'small',
-			'show'	=> __('read'),
-			'title' => __('read item'),
+			'show'	=> __('view'),
+			'title' => __('view item'),
 			'href'	=> array(
 				'action' => 'read',
 				$row[$this->model]['id']
@@ -272,6 +265,26 @@ class TwbTableHelper extends BbTableHelper {
 			)
 		), BB::setStyle($options, 'show'));
 		
+		$options['href'] = $this->actionUrl($options['href'], $row, $idx);
+		return $this->Html->tag($options);
+	}
+
+	public function actionCustomAction($name, $options, $row, $idx){
+		$lowerName = strtolower($name);
+
+		$options = BB::extend(array(
+			'xtag'	=> 'linkbtn',
+			'icon'	=> $lowerName,
+			'icon-only' => true,
+			'size'	=> 'small',
+			'show'	=> __($lowerName),
+			'title' => __($lowerName . ' item'),
+			'href'	=> array(
+				'action' => $lowerName,
+				$row[$this->model]['id']
+			)
+		), BB::setStyle($options, 'show'));
+
 		$options['href'] = $this->actionUrl($options['href'], $row, $idx);
 		return $this->Html->tag($options);
 	}
