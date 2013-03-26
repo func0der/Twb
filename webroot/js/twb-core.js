@@ -19,6 +19,20 @@ window.Twb = {};
  */
 !function ($) {
 	
+	
+	/**
+	 * Setup a generic ajax indicator
+	 */	
+	$.ajaxSetup({
+		beforeSend: function() {
+			Twb.loading(true)
+		},
+		complete: function() {
+			Twb.loading(false)
+		}
+	});
+	
+	
 	/**
 	 * jQuery Ready - Launcher
 	 */
@@ -50,11 +64,38 @@ window.Twb = {};
 		
 		// init media table plugin for configured tables
 		Twb.mediaTable();
-				
+		
 	});
 	
 	
 	
+	
+	
+	
+// ------------------------------------------------------------- //
+// ---[[   A J A X   A C T I V I T Y   I N D I C A T O R   ]]--- //
+// ------------------------------------------------------------- //
+	
+	Twb.loading = function(show) {
+		$target = $('#twb-ajax-activity');
+		if (!$target.length) {
+			$target = $('<div>')
+				.attr('id', 'twb-ajax-activity')
+				.html('loading...')
+				.hide();
+			;
+			$('body').append($target);
+		}
+		
+		if (show == 'show') show = true;
+		if (show == 'hide') show = false;
+		
+		if (show) {
+			$target.show().addClass('visible');
+		} else {
+			$target.removeClass('visible');
+		}
+	}
 	
 	
 	

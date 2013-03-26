@@ -22,7 +22,30 @@
 }
 
 
-
+#twb-ajax-activity {
+	position:fixed;
+	top:-45px;
+	left:50%;
+	margin-left:-100px;
+	z-index:9999;
+	
+	display: block;
+	width:200px;
+	height:25px;
+	
+	background: rgba(255,255,255,.8);
+	border: 4px solid #bbb;
+	border-radius:5px;
+	box-shadow: 3px 3px 5px #aaa;
+	
+	text-align:center;
+	padding-top:2px;
+	
+	transition: all 150ms cubic-bezier(0.155, 0.640, 1.000, 0.675);
+}
+#twb-ajax-activity.visible {
+	top:-5px;
+}
 
 
 
