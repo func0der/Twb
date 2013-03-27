@@ -20,7 +20,7 @@ class TwbFormHelper extends FormHelper {
 		
 		$options = BB::setDefaults($options, array(
 			'validate' => false,
-			'type' => '',
+			'twb-type' => '',
 			'class' => '',
 			'sticky' => true,
 			'ajax' => true,
@@ -46,7 +46,7 @@ class TwbFormHelper extends FormHelper {
 		} unset($options['validate']);
 		
 		
-		switch ($options['type']) {
+		switch ($options['twb-type']) {
 			
 			case 'inline':
 				$this->type = 'inline';
@@ -101,10 +101,11 @@ class TwbFormHelper extends FormHelper {
 				break;
 				
 		}
+
+		// Unset this to prevent it from going into attributes of the form
+		unset($options['twb-type']);
 		
-		return parent::create($model, BB::clear($options, array(
-			'type'
-		)));
+		return parent::create($model, $options);
 	}
 	
 	
