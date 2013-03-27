@@ -65,6 +65,9 @@ window.Twb = {};
 		// init media table plugin for configured tables
 		Twb.mediaTable();
 		
+		// textarea grows and shrinks
+		$('textarea[data-autosize="on"],textarea[data-autosize="true"],textarea[data-autosize=1]').data('autosize', null).autosize({append: "\n"})
+		
 	});
 	
 	
@@ -428,7 +431,7 @@ window.Twb = {};
 				error: function() {
 					Twb.msg.error("AJAX request could not be solved!<br>Sending form the standard way now...", "AJAX Error:");
 					setTimeout(function() {
-						$form.unbind('submit').submit();	
+						//$form.unbind('submit').submit();	
 					}, 500);
 				}
 			});

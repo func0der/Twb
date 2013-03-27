@@ -321,6 +321,11 @@ class TwbFormHelper extends FormHelper {
 				break;
 		}
 		
+		// data-autosize special options
+		if (isset($options['autosize'])) {
+			$options['data-autosize'] = 'on';
+		} unset($options['autosize']);
+		
 		return parent::input($name, BB::extend($this->_inputDefaults, $options));
 	}
 	

@@ -78,7 +78,8 @@
 		// UI plugins
 		$this->Html->script(array(
 			'Twb.3rd/jquery.numeric',
-			'Twb.3rd/jquery.lowercase'
+			'Twb.3rd/jquery.lowercase',
+			'Twb.3rd/autosize/jquery.autosize',
 		), array('inline' => false, 'prepend' => false));
 		
 		
