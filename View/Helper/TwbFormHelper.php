@@ -299,14 +299,22 @@ class TwbFormHelper extends FormHelper {
 	 */
 	public function input($name = '', $options = array()) {
 		
+		// checkbox
 		if (!empty($options['type']) && $options['type'] == 'checkbox') {
 			return $this->checkbox($name, $options);
 		}
 		
+		// radio
 		if (!empty($options['type']) && $options['type'] == 'radio') {
 			$options = BB::extend(array('options' => array()), $options);
 			return $this->radio($name, $options['options'], BB::clear($options, 'options'));
 		}
+		
+		// upload
+		if (!empty($options['type']) && $options['type'] == 'upload') {
+			return $this->upload($name, $options);
+		}
+		
 		
 		$options = $this->_labelOptions($options);
 		$options = $this->_helperOptions($options);
@@ -530,6 +538,49 @@ class TwbFormHelper extends FormHelper {
 		return str_replace( $matches[0][0], $items, $field );
 	}
 	
+	
+	/**
+	 * display an upload control box to handle upload through BbAttachment
+	 * and display a preview rapresentation for uploaded file
+	 */
+	public function upload($fieldName, $options = array()) {
+		
+		$options = BB::extend(array(
+			'previewImage'	=> '',
+			'previewPath'	=> ___BbAttachmentDefaultUploadDir__,
+			'previewSize'	=> null
+		), $options, array(
+			'type' => 'file',
+			'div' => array(
+				'data-twb-upload' => 'on'
+			)
+		));
+		
+		// extract image preview options
+		$previewImage = $options['previewImage'];
+		$previewPath = $options['previewPath'];
+		$previewSize = $options['previewSize'];
+		BB::clear($options, array(
+			'previewImage',
+			'previewPath',
+			'previewSize'
+		), false);
+		
+		// compose preview image with request data set
+		if (empty($previewImage) || !file_exists($previewImage)) {
+			$imageName = $this->value(false, $fieldName);
+			if (!empty($imageName)) {
+				$previewImage = $this->Html->fileIcon($previewPath . $imageName, $previewSize);
+			} else {
+				$previewImage = '';
+			}
+		}
+		
+		// insert preview image inside template
+		$options['between'] = '<div class="controls"><div class="twb-upload-preview">' . $previewImage . '</div>';
+		$options['after']	= '</div>';
+		return $this->input($fieldName, $options);
+	}
 	
 	
 	
