@@ -20,7 +20,7 @@ class TwbFormHelper extends FormHelper {
 		
 		$options = BB::setDefaults($options, array(
 			'validate' => false,
-			'twb-type' => '',
+			'layout' => '',
 			'class' => '',
 			'sticky' => true,
 			'ajax' => true,
@@ -46,10 +46,10 @@ class TwbFormHelper extends FormHelper {
 		} unset($options['validate']);
 		
 		
-		switch ($options['twb-type']) {
-			
+		switch ($options['layout']) {			
+
 			case 'inline':
-				$this->type = 'inline';
+				$this->layout = 'inline';
 				$options['class'] = trim('form-inline ' . $options['class']);
 				$options['inputDefaults'] = array(
 					'div' => false,
@@ -59,7 +59,7 @@ class TwbFormHelper extends FormHelper {
 				break;
 			
 			case 'horizontal':
-				$this->type = 'horizontal';
+				$this->layout = 'horizontal';
 				$options['class'] = trim('form-horizontal ' . $options['class']);
 				$options['inputDefaults'] = BB::extend(array(
 					'div' => array(
@@ -82,7 +82,7 @@ class TwbFormHelper extends FormHelper {
 			
 			case 'standard':
 			default:
-				$this->type = 'standard';
+				$this->layout = 'standard';
 				$options['class'] = trim('form-standard ' . $options['class']);
 				$options['inputDefaults'] = BB::extend(array(
 					'div' => array(
@@ -101,11 +101,10 @@ class TwbFormHelper extends FormHelper {
 				break;
 				
 		}
-
-		// Unset this to prevent it from going into attributes of the form
-		unset($options['twb-type']);
 		
-		return parent::create($model, $options);
+		return parent::create($model, BB::clear($options, array(
+			'layout'
+		)));
 	}
 	
 	
@@ -313,7 +312,7 @@ class TwbFormHelper extends FormHelper {
 		$options = $this->_helperOptions($options);
 		
 		// apply form's type based variations
-		switch ($this->type) {
+		switch ($this->layout) {
 			case 'inline':
 				if (empty($options['placeholder'])) {
 					$options['placeholder'] = $options['label']['text'];
@@ -321,6 +320,11 @@ class TwbFormHelper extends FormHelper {
 				$options['label'] = false;
 				break;
 		}
+		
+		// data-autosize special options
+		if (isset($options['autosize'])) {
+			$options['data-autosize'] = 'on';
+		} unset($options['autosize']);
 		
 		return parent::input($name, BB::extend($this->_inputDefaults, $options));
 	}
@@ -358,7 +362,7 @@ class TwbFormHelper extends FormHelper {
 		// style fix
 		// standard's form single checkbox display itself inline without
 		// control's label!
-		if ($this->type === 'standard' && empty($options['options'])) {
+		if ($this->layout === 'standard' && empty($options['options'])) {
 			$options['options'] = array($fieldName => array(
 				'text' => !empty($options['label']['text'])?$options['label']['text']:$fieldName,
 				'helper' => !empty($options['helper'])?$options['helper']:''
@@ -555,7 +559,7 @@ class TwbFormHelper extends FormHelper {
 			
 			$position = 'right';
 			if (!empty($options['type']) && in_array($options['type'], array('checkbox', 'radio', 'select'))) {
-				$position = $this->type == 'horizontal' ? 'top' : 'right';
+				$position = $this->layout == 'horizontal' ? 'top' : 'right';
 			}
 			
 			// helper defaults

@@ -19,6 +19,20 @@ window.Twb = {};
  */
 !function ($) {
 	
+	
+	/**
+	 * Setup a generic ajax indicator
+	 */	
+	$.ajaxSetup({
+		beforeSend: function() {
+			Twb.loading(true)
+		},
+		complete: function() {
+			Twb.loading(false)
+		}
+	});
+	
+	
 	/**
 	 * jQuery Ready - Launcher
 	 */
@@ -50,11 +64,41 @@ window.Twb = {};
 		
 		// init media table plugin for configured tables
 		Twb.mediaTable();
-				
+		
+		// textarea grows and shrinks
+		$('textarea[data-autosize="on"],textarea[data-autosize="true"],textarea[data-autosize=1]').data('autosize', null).autosize({append: "\n"})
+		
 	});
 	
 	
 	
+	
+	
+	
+// ------------------------------------------------------------- //
+// ---[[   A J A X   A C T I V I T Y   I N D I C A T O R   ]]--- //
+// ------------------------------------------------------------- //
+	
+	Twb.loading = function(show) {
+		$target = $('#twb-ajax-activity');
+		if (!$target.length) {
+			$target = $('<div>')
+				.attr('id', 'twb-ajax-activity')
+				.html('loading...')
+				.hide();
+			;
+			$('body').append($target);
+		}
+		
+		if (show == 'show') show = true;
+		if (show == 'hide') show = false;
+		
+		if (show) {
+			$target.show().addClass('visible');
+		} else {
+			$target.removeClass('visible');
+		}
+	}
 	
 	
 	
@@ -387,7 +431,7 @@ window.Twb = {};
 				error: function() {
 					Twb.msg.error("AJAX request could not be solved!<br>Sending form the standard way now...", "AJAX Error:");
 					setTimeout(function() {
-						$form.unbind('submit').submit();	
+						//$form.unbind('submit').submit();	
 					}, 500);
 				}
 			});

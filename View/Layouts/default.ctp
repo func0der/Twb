@@ -75,6 +75,13 @@
 		$this->Html->css('Twb./js/3rd/mediatable/jquery.mediatable', array('inline' => false, 'prepend' => false));
 		$this->Html->script('Twb.3rd/mediatable/jquery.mediatable', array('inline' => false, 'prepend' => false));
 		
+		// UI plugins
+		$this->Html->script(array(
+			'Twb.3rd/jquery.numeric',
+			'Twb.3rd/jquery.lowercase',
+			'Twb.3rd/autosize/jquery.autosize',
+		), array('inline' => false, 'prepend' => false));
+		
 		
 		echo $this->fetch('css');
 		
