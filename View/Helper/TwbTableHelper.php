@@ -192,16 +192,16 @@ class TwbTableHelper extends BbTableHelper {
 			
 			switch (strtolower($name)) {
 				case 'view':
-					$actions[] = $this->actionView($config, $data['dataRow'], $data['dataIdx']);
+					$actions[] = $this->actionView($config, $data, $data['_TableRow']['rowIdx']);
 					break;
 				case 'edit':
-					$actions[] = $this->actionEdit($config, $data['dataRow'], $data['dataIdx']);
+					$actions[] = $this->actionEdit($config, $data, $data['_TableRow']['rowIdx']);
 					break;
 				case 'delete':
-					$actions[] = $this->actionDelete($config, $data['dataRow'], $data['dataIdx']);
+					$actions[] = $this->actionDelete($config, $data, $data['_TableRow']['rowIdx']);
 					break;
 				default:
-					$actions[] = $this->actionCustomAction($name, $config, $data['dataRow'], $data['dataIdx']);
+					$actions[] = $this->actionCustomAction($name, $config, $data, $data['_TableRow']['rowIdx']);
 					break;
 			}
 		}
