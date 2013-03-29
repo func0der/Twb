@@ -530,8 +530,8 @@ window.Twb = {};
 							
 							// update upload field preview and all binded icons
 							$wrap.find('img').attr('src', 'data:image/png;base64,' + b64);
-							$('img[data-twb-role="' + id + 'UploadIcon"]').attr('src', 'data:image/png;base64,' + b64);
-							$('img.' + id + 'UploadIcon').attr('src', 'data:image/png;base64,' + b64);
+							$('img[data-twb-role="' + id + 'UploadPreview"]').attr('src', 'data:image/png;base64,' + b64);
+							$('img.' + id + 'UploadPreview').attr('src', 'data:image/png;base64,' + b64);
 						});
 					}
 					
@@ -540,7 +540,7 @@ window.Twb = {};
 				error: function() {
 					Twb.msg.error("AJAX request could not be solved!<br>Sending form the standard way now...", "AJAX Error:");
 					setTimeout(function() {
-						//$form.unbind('submit').submit();	
+						$form.unbind('submit').submit();	
 					}, 500);
 				}
 			});
