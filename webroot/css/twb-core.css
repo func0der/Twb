@@ -77,6 +77,12 @@
 html.good .form-horizontal .error .help-inline {
   display: none;
 }
+textarea[data-autosize="on"] {
+  vertical-align: top;
+  -webkit-transition: height 0.2s;
+  -moz-transition: height 0.2s;
+  transition: height 0.2s;
+}
 @media (max-width: 978px) {
   .twb-stickyUi .twb-sticky-ghost {
     display: none;

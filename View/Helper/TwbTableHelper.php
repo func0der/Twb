@@ -220,6 +220,7 @@ class TwbTableHelper extends BbTableHelper {
 			'size'	=> 'small',
 			'show'	=> __('view'),
 			'title' => __('view item'),
+			'data-twb-role' => 'viewTableRow',
 			'href'	=> array(
 				'action' => 'view',
 				$row[$this->model]['id']
@@ -238,6 +239,7 @@ class TwbTableHelper extends BbTableHelper {
 			'size'	=> 'small',
 			'show'	=> __('edit'),
 			'title' => __('edit item'),
+			'data-twb-role' => 'editTableRow',
 			'href'	=> array(
 				'action' => 'edit',
 				$row[$this->model]['id']
@@ -258,7 +260,7 @@ class TwbTableHelper extends BbTableHelper {
 			'size'	=> 'small',
 			'show'	=> __('delete'),
 			'title' => __('delete item'),
-			'confirm' => 'confirm?',
+			'data-twb-role' => 'deleteTableRow',
 			'href'	=> array(
 				'action' => 'delete',
 				$row[$this->model]['id']

@@ -56,6 +56,7 @@ window.Twb = {};
 		// make some UI components stiky
 		Twb.stickyUI();
 		
+		
 		// init forms behaviors
 		Twb.formInputPopover();
 		Twb.formErrorsAction('.form-standard, .form-horizontal');
@@ -65,12 +66,89 @@ window.Twb = {};
 		// init media table plugin for configured tables
 		Twb.mediaTable();
 		
+		// handle table row standard delete action:
+		$('table').delegate('[data-twb-role="deleteTableRow"]', 'click', Twb.deleteTableRow);
+		
 		// textarea grows and shrinks
 		$('textarea[data-autosize="on"],textarea[data-autosize="true"],textarea[data-autosize=1]').data('autosize', null).autosize({append: "\n"})
 		
 	});
 	
 	
+	
+	
+	Twb.modal = function(cfg) {
+		cfg = cfg || {};
+		cfg = $.extend({},{
+			title: 'Confirm:',
+			text: '<p>do you really want to perform request action?</p>',
+			close: true,
+			onCancel: function(e, btn) {},
+			onConfirm: function(e, btn) {},
+			buttons: [{
+				show: 'cancel',
+				onClick: function(e, btn) {
+					cfg.onCancel.call(this, e, btn);
+				}
+			}, {
+				show: 'Confirm!',
+				type: 'primary',
+				onClick: function(e, btn) {
+					cfg.onConfirm.call(this, e, btn);
+				}
+			}]
+		},cfg);
+		
+
+		var $modal = $(
+				'<div id="twb-modal" class="modal hide fade">'
+			+ 	'<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3></h3></div>'
+			+	'<div class="modal-body"></div>'
+			+	'<div class="modal-footer"></div>'
+			+	'</div>'
+		);
+		
+		// fill title and text
+		$modal.find('h3').html(cfg.title);
+		$modal.find('.modal-body').html(cfg.text);
+		
+		// remove empty modal blocks
+		if (!cfg.title)				$modal.find('.modal-header').remove();
+		if (!cfg.text) 				$modal.find('.modal-body').remove();
+		if (!cfg.buttons.length) 	$modal.find('.modal-footer').remove();
+		if (!cfg.close) 			$modal.find('.modal-header button').remove();
+		
+		// compose buttons
+		$.each(cfg.buttons, function(i, btn) {
+			btn = $.extend({},{
+				type: '',
+				size: '',
+				show: 'action',
+				onClick: function() {}
+			},btn);
+			
+			$btn = $('<button>')
+				.html(btn.show)
+				.attr('data-dismiss', 'modal')
+				.attr('class', 'btn')
+				.delegate(null, 'click', function(e) {
+					btn.onClick.call($modal, e, this)
+				});
+			;
+			
+			// additional classes
+			if (btn.type) $btn.addClass('btn-' + btn.type);
+			if (btn.size) $btn.addClass('btn-' + btn.size);
+			
+			$modal.find('.modal-footer').append($btn);
+		});
+		
+		// add modal to the body
+		$('body').append($modal);
+		$modal.modal();
+		$modal.on('hidden', function() {$modal.remove()});
+	};
+
 	
 	
 	
@@ -100,6 +178,10 @@ window.Twb = {};
 		}
 	}
 	
+	Twb.ajaxError = function(text) {
+		text = text || 'AJAX request could not be solved!';
+		Twb.msg.error(text);
+	}
 	
 	
 	
@@ -486,12 +568,53 @@ window.Twb = {};
 	
 	
 	
+	
+	/**
+	 * Handle a table row's standard delete action.
+	 * it confirms action with a modal
+	 */
+	Twb.deleteTableRow = function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		
+		var _btn = this;
+		var $btn = $(this);
+		
+		Twb.modal({
+			onConfirm: function() {
+				$.ajax({
+					type: 		'POST',
+					url: 		$btn.attr('href'),
+					success: 	_success,
+					error: 		_error
+				});
+			}
+		});
+		
+		var _success = function(r) {
+			if (!r.ajax) {
+				_error();
+				
+			} else if (r.ajax.type == 'success') {
+				Twb.msg.success(r.ajax.text);
+				$btn.parents('tr').fadeOut(function() {$(this).remove()});
+				
+			} else {
+				Twb.msg.error(r.ajax.text);
+			}
+		};
+		
+		var _error = function() {
+			Twb.ajaxError();
+			location.href = $btn.attr('href');
+		};
+	};
 
 
 
-
-
-
+	
+	
+	
 
 
 
