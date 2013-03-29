@@ -567,9 +567,7 @@ window.Twb = {};
 			menuTitle: '<i class="icon-chevron-down pull-right" style="margin-top:4px"></i> Colonne Visibili:'
 		};
 		$('table[data-responsive=on]').mediaTable(cfg);
-		if (Twb.is.mobile) {
-			$('table[data-responsive=mobile]').mediaTable(cfg);	
-		}
+		if (Twb.is.mobile) $('table[data-responsive=mobile]').mediaTable(cfg);	
 	};
 	
 	

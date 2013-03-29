@@ -64,7 +64,9 @@ class TwbTableHelper extends BbTableHelper {
 		// prepare responsive options
 		$this->_setupResponsive($options['responsive']);
 		if ($this->_responsive !== false) $options['data-responsive'] = 'on';
-		if ($options['responsiveOnMobile']) $options['data-responsive'] = 'mobile';
+		if ($options['responsiveOnMobile'] === true) $options['data-responsive'] = 'mobile';
+		if ($options['responsive'] === false) unset($options['data-responsive']);
+		
 		
 		$options['class'] = trim($options['class'] . ' ' . $options['customClass']);
 		$options = BB::clear($options, array(
@@ -77,6 +79,7 @@ class TwbTableHelper extends BbTableHelper {
 			'responsiveOnMobile'
 		), false);
 		
+		#debug($options);
 		return parent::render($data, $options);	
 	}
 	
@@ -299,6 +302,10 @@ class TwbTableHelper extends BbTableHelper {
 	 */
 	protected function _setupResponsive($options) {
 		
+		if (is_bool($options)) {
+			$options = 'id';
+		}
+			
 		// string2array for main key definition
 		if (is_string($options)) {
 			$tmp = explode(',', $options);
