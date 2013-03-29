@@ -514,6 +514,27 @@ window.Twb = {};
 							location.href = data.ajax.redirect;
 						}, 700);
 					}
+					
+					// !!! EXPERIMENTAL !!!
+					// update BbAttachment uploads
+					if (data.data && data.data.BbAttachment) {
+						$.each(data.data.BbAttachment, function(id, b64) {
+							var $field = $('#'+id);
+							var $wrap = $field.parent();
+							
+							var $preview = $wrap.find('.twb-upload-preview');
+							if (!$preview.length) {
+								$preview = $('<div class="twb-upload-preview"><img src=""></div>');
+								$field.before($preview);
+							}
+							
+							// update upload field preview and all binded icons
+							$wrap.find('img').attr('src', 'data:image/png;base64,' + b64);
+							$('img[data-twb-role="' + id + 'UploadIcon"]').attr('src', 'data:image/png;base64,' + b64);
+							$('img.' + id + 'UploadIcon').attr('src', 'data:image/png;base64,' + b64);
+						});
+					}
+					
 				},
 				// ajax error - disable ajax form
 				error: function() {
@@ -524,21 +545,6 @@ window.Twb = {};
 				}
 			});
 			
-			/*
-			$form.bind('submit', function(e) {
-				e.preventDefault();
-				e.stopPropagation();
-				
-				$form.ajaxSubmit();
-			});
-			*/
-			
-			
-			/*
-			$form.delegate('[data-twb-upload="on"] input', 'change', function() {
-				$form.unbind('submit');
-			});
-			*/
 		});
 	};
 	
