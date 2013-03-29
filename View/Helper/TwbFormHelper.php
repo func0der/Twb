@@ -545,6 +545,13 @@ class TwbFormHelper extends FormHelper {
 	 */
 	public function upload($fieldName, $options = array()) {
 		
+		if (strpos($fieldName, '.') !== false) {
+			list($_model, $_field) = explode('.', $fieldName);
+		} else {
+			$_model = $this->defaultModel;
+			$_field = $fieldName;
+		}
+		
 		$options = BB::extend(array(
 			'previewImage'	=> '',
 			'previewPath'	=> ___BbAttachmentDefaultUploadDir__,
@@ -568,12 +575,8 @@ class TwbFormHelper extends FormHelper {
 		
 		// compose preview image with request data set
 		if (empty($previewImage) || !file_exists($previewImage)) {
-			$imageName = $this->value(false, $fieldName);
-			if (!empty($imageName)) {
-				$previewImage = $this->Html->fileIcon($previewPath . $imageName, $previewSize);
-			} else {
-				$previewImage = '';
-			}
+			$uploadModel = $_model . Inflector::camelize($_field);
+			$previewImage = $this->Html->fileIcon($this->value(false, $uploadModel.'.full_path'), $previewSize);
 		}
 		
 		// insert preview image inside template

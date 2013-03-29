@@ -396,6 +396,12 @@ window.Twb = {};
 		
 		$(form).each(function() {
 			var $form = $(this);
+			
+			// disable ajax form if an attachment is sent!
+			if ($form.find('input[type=file]').length) {
+				//return;
+			}
+			
 			$form.ajaxForm({
 				dataType: 'json',
 				success: function(data) {
@@ -435,6 +441,22 @@ window.Twb = {};
 					}, 500);
 				}
 			});
+			
+			/*
+			$form.bind('submit', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				
+				$form.ajaxSubmit();
+			});
+			*/
+			
+			
+			/*
+			$form.delegate('[data-twb-upload="on"] input', 'change', function() {
+				$form.unbind('submit');
+			});
+			*/
 		});
 	};
 	
