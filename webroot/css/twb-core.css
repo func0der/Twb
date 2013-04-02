@@ -29,6 +29,22 @@
 #twb-ajax-activity.visible {
   top: -5px;
 }
+.twb-page-header {
+  position: relative;
+}
+.twb-page-header .btn-group {
+  position: absolute;
+  bottom: 10px;
+  right: 0;
+}
+.twb-page-header.twb-sticky {
+  position: relative;
+}
+.twb-page-header.twb-sticky .btn-group {
+  position: relative;
+  bottom: auto;
+  right: auto;
+}
 .ui-pnotify.pnotify-stack-top-right {
   top: 65px;
   right: 25px;

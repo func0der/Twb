@@ -77,6 +77,15 @@ window.Twb = {};
 	
 	
 	
+	
+	
+	/**
+	 * It creates a modal dialog with generic content and actions.
+	 * actions are buttons that fires callbacks.
+	 *
+	 * @TODO: "enter" and "esc" keypress need to be binded to confirm and cancel
+	 * actions when a dialog is visible.
+	 */
 	Twb.modal = function(cfg) {
 		cfg = cfg || {};
 		cfg = $.extend({},{
@@ -147,6 +156,12 @@ window.Twb = {};
 		$('body').append($modal);
 		$modal.modal();
 		$modal.on('hidden', function() {$modal.remove()});
+		
+		// focus last modal button.
+		// so you can fire "enter" to confirm modal
+		setTimeout(function() {
+			$modal.find('.modal-footer button').last().focus();
+		}, 500);
 	};
 
 	
@@ -522,16 +537,18 @@ window.Twb = {};
 							var $field = $('#'+id);
 							var $wrap = $field.parent();
 							
-							var $preview = $wrap.find('.twb-upload-preview');
+							var $preview = $wrap.find('.twb-upload-preview img');
 							if (!$preview.length) {
-								$preview = $('<div class="twb-upload-preview"><img src=""></div>');
-								$field.before($preview);
+								$preview = $('<img>').hide();
+								$wrap.find('.twb-upload-preview').append($preview);
 							}
 							
 							// update upload field preview and all binded icons
-							$wrap.find('img').attr('src', 'data:image/png;base64,' + b64);
+							$preview.attr('src', 'data:image/png;base64,' + b64);
 							$('img[data-twb-role="' + id + 'UploadPreview"]').attr('src', 'data:image/png;base64,' + b64);
 							$('img.' + id + 'UploadPreview').attr('src', 'data:image/png;base64,' + b64);
+							
+							if ($preview.is(':hidden')) $preview.fadeIn();
 						});
 					}
 					

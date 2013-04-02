@@ -279,7 +279,6 @@ class TwbTableHelper extends BbTableHelper {
 		
 		$options = BB::extend(array(
 			'xtag'	=> 'linkbtn',
-			'icon'	=> $lowerName,
 			'size'	=> 'small',
 			'show'	=> __($lowerName),
 			'title' => __($lowerName . ' item'),
