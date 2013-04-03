@@ -29,6 +29,24 @@
 #twb-ajax-activity.visible {
   top: -5px;
 }
+.twb-page-header {
+  position: relative;
+  z-index: auto;
+}
+.twb-page-header .btn-group {
+  position: absolute;
+  bottom: 10px;
+  right: 0;
+}
+.twb-page-header.twb-sticky {
+  position: relative;
+  z-index: 999;
+}
+.twb-page-header.twb-sticky .btn-group {
+  position: relative;
+  bottom: auto;
+  right: auto;
+}
 .ui-pnotify.pnotify-stack-top-right {
   top: 65px;
   right: 25px;
@@ -76,6 +94,12 @@
 }
 html.good .form-horizontal .error .help-inline {
   display: none;
+}
+textarea[data-autosize="on"] {
+  vertical-align: top;
+  -webkit-transition: height 0.2s;
+  -moz-transition: height 0.2s;
+  transition: height 0.2s;
 }
 @media (max-width: 978px) {
   .twb-stickyUi .twb-sticky-ghost {

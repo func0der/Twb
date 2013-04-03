@@ -177,12 +177,14 @@ class TwbLayoutHelper extends AppHelper {
 		}
 		
 		$options = BB::extend(array(
+			'image'		=> '',
 			'title'		=> $title,
 			'subtitle'	=> '',
 			'actions'	=> $actions,
 			'groupActions' => true,
 			'actionOptions' => array(),
-			'sticky' => true
+			'sticky' => true,
+			'titleTag' => 'h1'
 		), BB::setDefaultAttrs($options));
 		
 		if ($options['sticky'] === true) {
@@ -199,8 +201,14 @@ class TwbLayoutHelper extends AppHelper {
 		
 		// setup title
 		$title = $this->Html->tag(array(
-			'tag' => 'h1',
+			'tag' => $options['titleTag'],
 			'content' => array(
+				array(
+					'tag' => 'span',
+					'class' => 'twb-page-image',
+					'content' => $options['image'],
+					'after' => ' '
+				),
 				$options['title'],
 				' ',
 				array(
@@ -258,7 +266,9 @@ class TwbLayoutHelper extends AppHelper {
 				$title,
 			)
 		), BB::clear($options, array(
+			'image',
 			'title',
+			'titleTag',
 			'subtitle',
 			'actions',
 			'groupActions',

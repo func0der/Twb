@@ -56,6 +56,7 @@ window.Twb = {};
 		// make some UI components stiky
 		Twb.stickyUI();
 		
+		
 		// init forms behaviors
 		Twb.formInputPopover();
 		Twb.formErrorsAction('.form-standard, .form-horizontal');
@@ -65,12 +66,104 @@ window.Twb = {};
 		// init media table plugin for configured tables
 		Twb.mediaTable();
 		
+		// handle table row standard delete action:
+		$('table').delegate('[data-twb-role="deleteTableRow"]', 'click', Twb.deleteTableRow);
+		
 		// textarea grows and shrinks
 		$('textarea[data-autosize="on"],textarea[data-autosize="true"],textarea[data-autosize=1]').data('autosize', null).autosize({append: "\n"})
 		
 	});
 	
 	
+	
+	
+	
+	
+	/**
+	 * It creates a modal dialog with generic content and actions.
+	 * actions are buttons that fires callbacks.
+	 *
+	 * @TODO: "enter" and "esc" keypress need to be binded to confirm and cancel
+	 * actions when a dialog is visible.
+	 */
+	Twb.modal = function(cfg) {
+		cfg = cfg || {};
+		cfg = $.extend({},{
+			title: 'Confirm:',
+			text: '<p>do you really want to perform request action?</p>',
+			close: true,
+			onCancel: function(e, btn) {},
+			onConfirm: function(e, btn) {},
+			buttons: [{
+				show: 'cancel',
+				onClick: function(e, btn) {
+					cfg.onCancel.call(this, e, btn);
+				}
+			}, {
+				show: 'Confirm!',
+				type: 'primary',
+				onClick: function(e, btn) {
+					cfg.onConfirm.call(this, e, btn);
+				}
+			}]
+		},cfg);
+		
+
+		var $modal = $(
+				'<div id="twb-modal" class="modal hide fade">'
+			+ 	'<div class="modal-header"><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h3></h3></div>'
+			+	'<div class="modal-body"></div>'
+			+	'<div class="modal-footer"></div>'
+			+	'</div>'
+		);
+		
+		// fill title and text
+		$modal.find('h3').html(cfg.title);
+		$modal.find('.modal-body').html(cfg.text);
+		
+		// remove empty modal blocks
+		if (!cfg.title)				$modal.find('.modal-header').remove();
+		if (!cfg.text) 				$modal.find('.modal-body').remove();
+		if (!cfg.buttons.length) 	$modal.find('.modal-footer').remove();
+		if (!cfg.close) 			$modal.find('.modal-header button').remove();
+		
+		// compose buttons
+		$.each(cfg.buttons, function(i, btn) {
+			btn = $.extend({},{
+				type: '',
+				size: '',
+				show: 'action',
+				onClick: function() {}
+			},btn);
+			
+			$btn = $('<button>')
+				.html(btn.show)
+				.attr('data-dismiss', 'modal')
+				.attr('class', 'btn')
+				.delegate(null, 'click', function(e) {
+					btn.onClick.call($modal, e, this)
+				});
+			;
+			
+			// additional classes
+			if (btn.type) $btn.addClass('btn-' + btn.type);
+			if (btn.size) $btn.addClass('btn-' + btn.size);
+			
+			$modal.find('.modal-footer').append($btn);
+		});
+		
+		// add modal to the body
+		$('body').append($modal);
+		$modal.modal();
+		$modal.on('hidden', function() {$modal.remove()});
+		
+		// focus last modal button.
+		// so you can fire "enter" to confirm modal
+		setTimeout(function() {
+			$modal.find('.modal-footer button').last().focus();
+		}, 500);
+	};
+
 	
 	
 	
@@ -100,6 +193,10 @@ window.Twb = {};
 		}
 	}
 	
+	Twb.ajaxError = function(text) {
+		text = text || 'AJAX request could not be solved!';
+		Twb.msg.error(text);
+	}
 	
 	
 	
@@ -396,6 +493,12 @@ window.Twb = {};
 		
 		$(form).each(function() {
 			var $form = $(this);
+			
+			// disable ajax form if an attachment is sent!
+			if ($form.find('input[type=file]').length) {
+				//return;
+			}
+			
 			$form.ajaxForm({
 				dataType: 'json',
 				success: function(data) {
@@ -426,15 +529,39 @@ window.Twb = {};
 							location.href = data.ajax.redirect;
 						}, 700);
 					}
+					
+					// !!! EXPERIMENTAL !!!
+					// update BbAttachment uploads
+					if (data.data && data.data.BbAttachment) {
+						$.each(data.data.BbAttachment, function(id, b64) {
+							var $field = $('#'+id);
+							var $wrap = $field.parent();
+							
+							var $preview = $wrap.find('.twb-upload-preview img');
+							if (!$preview.length) {
+								$preview = $('<img>').hide();
+								$wrap.find('.twb-upload-preview').append($preview);
+							}
+							
+							// update upload field preview and all binded icons
+							$preview.attr('src', 'data:image/png;base64,' + b64);
+							$('img[data-twb-role="' + id + 'UploadPreview"]').attr('src', 'data:image/png;base64,' + b64);
+							$('img.' + id + 'UploadPreview').attr('src', 'data:image/png;base64,' + b64);
+							
+							if ($preview.is(':hidden')) $preview.fadeIn();
+						});
+					}
+					
 				},
 				// ajax error - disable ajax form
 				error: function() {
 					Twb.msg.error("AJAX request could not be solved!<br>Sending form the standard way now...", "AJAX Error:");
 					setTimeout(function() {
-						//$form.unbind('submit').submit();	
+						$form.unbind('submit').submit();	
 					}, 500);
 				}
 			});
+			
 		});
 	};
 	
@@ -457,19 +584,58 @@ window.Twb = {};
 			menuTitle: '<i class="icon-chevron-down pull-right" style="margin-top:4px"></i> Colonne Visibili:'
 		};
 		$('table[data-responsive=on]').mediaTable(cfg);
-		if (Twb.is.mobile) {
-			$('table[data-responsive=mobile]').mediaTable(cfg);	
-		}
+		if (Twb.is.mobile) $('table[data-responsive=mobile]').mediaTable(cfg);	
 	};
 	
 	
 	
+	
+	/**
+	 * Handle a table row's standard delete action.
+	 * it confirms action with a modal
+	 */
+	Twb.deleteTableRow = function(e) {
+		e.preventDefault();
+		e.stopPropagation();
+		
+		var _btn = this;
+		var $btn = $(this);
+		
+		Twb.modal({
+			onConfirm: function() {
+				$.ajax({
+					type: 		'POST',
+					url: 		$btn.attr('href'),
+					success: 	_success,
+					error: 		_error
+				});
+			}
+		});
+		
+		var _success = function(r) {
+			if (!r.ajax) {
+				_error();
+				
+			} else if (r.ajax.type == 'success') {
+				Twb.msg.success(r.ajax.text);
+				$btn.parents('tr').fadeOut(function() {$(this).remove()});
+				
+			} else {
+				Twb.msg.error(r.ajax.text);
+			}
+		};
+		
+		var _error = function() {
+			Twb.ajaxError();
+			location.href = $btn.attr('href');
+		};
+	};
 
 
 
-
-
-
+	
+	
+	
 
 
 

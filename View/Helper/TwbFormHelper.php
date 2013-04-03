@@ -148,7 +148,7 @@ class TwbFormHelper extends FormHelper {
 		
 		// render actions
 		$ractions = '';
-		foreach ($actions as $action) {
+		foreach ($actions as $actionName => $action) {
 			
 			// action button from string!
 			if (is_string($action)) {
@@ -235,6 +235,14 @@ class TwbFormHelper extends FormHelper {
 					'class'	=> 'btn'
 				), $action);
 				
+			} else {
+				$action = BB::extend(array(
+					'tag' => 'input',
+					'type' => 'submit',
+					'value' => $actionName,
+					'name' => $actionName,
+					'class' => 'btn'
+				), BB::set($action, 'value'));
 			}
 			
 			
@@ -299,14 +307,22 @@ class TwbFormHelper extends FormHelper {
 	 */
 	public function input($name = '', $options = array()) {
 		
+		// checkbox
 		if (!empty($options['type']) && $options['type'] == 'checkbox') {
 			return $this->checkbox($name, $options);
 		}
 		
+		// radio
 		if (!empty($options['type']) && $options['type'] == 'radio') {
 			$options = BB::extend(array('options' => array()), $options);
 			return $this->radio($name, $options['options'], BB::clear($options, 'options'));
 		}
+		
+		// upload
+		if (!empty($options['type']) && $options['type'] == 'upload') {
+			return $this->upload($name, $options);
+		}
+		
 		
 		$options = $this->_labelOptions($options);
 		$options = $this->_helperOptions($options);
@@ -530,6 +546,74 @@ class TwbFormHelper extends FormHelper {
 		return str_replace( $matches[0][0], $items, $field );
 	}
 	
+	
+	/**
+	 * display an upload control box to handle upload through BbAttachment
+	 * and display a preview rapresentation for uploaded file
+	 */
+	public function upload($fieldName, $options = array()) {
+		
+		if (strpos($fieldName, '.') !== false) {
+			list($_model, $_field) = explode('.', $fieldName);
+		} else {
+			$_model = $this->defaultModel;
+			$_field = $fieldName;
+		}
+		
+		// Handle "Model.{n}.fieldName" fields
+		if (is_numeric($_field)) {
+			list($_model, $_idx, $_field) = explode('.', $fieldName);
+		}
+		
+		$options = BB::extend(array(
+			'previewImage'	=> '',
+			'previewPath'	=> ___BbAttachmentDefaultUploadDir__,
+			'previewSize'	=> null,
+			'previewOptions'=> array()
+		), $options, array(
+			'type' => 'file',
+			'div' => array(
+				'data-twb-upload' => 'on'
+			)
+		));
+		
+		// extract image preview options
+		$previewImage = $options['previewImage'];
+		$previewPath = $options['previewPath'];
+		$previewSize = $options['previewSize'];
+		$previewOptions = $options['previewOptions'];
+		BB::clear($options, array(
+			'previewImage',
+			'previewPath',
+			'previewSize',
+			'previewOptions'
+		), false);
+		
+		// compose preview image with request data set
+		if (empty($previewImage) || !file_exists($previewImage)) {
+			$uploadModel = $_model . Inflector::camelize($_field);
+			// compose upload field name handling "{n}.fieldName" form
+			$uploadField = '.full_path';
+			if (isset($_idx)) $uploadField = '.' . $_idx . $uploadField;
+			$previewImage = $this->Html->fileIcon($this->value(false, $uploadModel.$uploadField), $previewSize, $previewOptions);
+		}
+		
+		// insert preview image inside template, it force to overrides
+		// standard field format
+		if (isset($options['between'])) {
+			$options['$__between'] = $options['between'] . '<div class="twb-upload-preview">' . $previewImage . '</div>';
+		} else {
+			$options['$__between'] = '<div class="controls"><div class="twb-upload-preview">' . $previewImage . '</div>';
+		}
+		
+		if (isset($options['after'])) {
+			$options['$__after'] = $options['after'] . '';
+		} else {
+			$options['$__after'] = '</div>';
+		}
+		
+		return $this->input($fieldName, BB::clear($options, array('between', 'after'), false));
+	}
 	
 	
 	

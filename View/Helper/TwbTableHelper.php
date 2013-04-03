@@ -64,7 +64,9 @@ class TwbTableHelper extends BbTableHelper {
 		// prepare responsive options
 		$this->_setupResponsive($options['responsive']);
 		if ($this->_responsive !== false) $options['data-responsive'] = 'on';
-		if ($options['responsiveOnMobile']) $options['data-responsive'] = 'mobile';
+		if ($options['responsiveOnMobile'] === true) $options['data-responsive'] = 'mobile';
+		if ($options['responsive'] === false) unset($options['data-responsive']);
+		
 		
 		$options['class'] = trim($options['class'] . ' ' . $options['customClass']);
 		$options = BB::clear($options, array(
@@ -77,6 +79,7 @@ class TwbTableHelper extends BbTableHelper {
 			'responsiveOnMobile'
 		), false);
 		
+		#debug($options);
 		return parent::render($data, $options);	
 	}
 	
@@ -192,16 +195,16 @@ class TwbTableHelper extends BbTableHelper {
 			
 			switch (strtolower($name)) {
 				case 'view':
-					$actions[] = $this->actionView($config, $data['dataRow'], $data['dataIdx']);
+					$actions[] = $this->actionView($config, $data, $data['_TableRow']['rowIdx']);
 					break;
 				case 'edit':
-					$actions[] = $this->actionEdit($config, $data['dataRow'], $data['dataIdx']);
+					$actions[] = $this->actionEdit($config, $data, $data['_TableRow']['rowIdx']);
 					break;
 				case 'delete':
-					$actions[] = $this->actionDelete($config, $data['dataRow'], $data['dataIdx']);
+					$actions[] = $this->actionDelete($config, $data, $data['_TableRow']['rowIdx']);
 					break;
 				default:
-					$actions[] = $this->actionCustomAction($name, $config, $data['dataRow'], $data['dataIdx']);
+					$actions[] = $this->actionCustomAction($name, $config, $data, $data['_TableRow']['rowIdx']);
 					break;
 			}
 		}
@@ -220,6 +223,7 @@ class TwbTableHelper extends BbTableHelper {
 			'size'	=> 'small',
 			'show'	=> __('view'),
 			'title' => __('view item'),
+			'data-twb-role' => 'viewTableRow',
 			'href'	=> array(
 				'action' => 'view',
 				$row[$this->model]['id']
@@ -238,6 +242,7 @@ class TwbTableHelper extends BbTableHelper {
 			'size'	=> 'small',
 			'show'	=> __('edit'),
 			'title' => __('edit item'),
+			'data-twb-role' => 'editTableRow',
 			'href'	=> array(
 				'action' => 'edit',
 				$row[$this->model]['id']
@@ -258,7 +263,7 @@ class TwbTableHelper extends BbTableHelper {
 			'size'	=> 'small',
 			'show'	=> __('delete'),
 			'title' => __('delete item'),
-			'confirm' => 'confirm?',
+			'data-twb-role' => 'deleteTableRow',
 			'href'	=> array(
 				'action' => 'delete',
 				$row[$this->model]['id']
@@ -274,7 +279,6 @@ class TwbTableHelper extends BbTableHelper {
 		
 		$options = BB::extend(array(
 			'xtag'	=> 'linkbtn',
-			'icon'	=> $lowerName,
 			'size'	=> 'small',
 			'show'	=> __($lowerName),
 			'title' => __($lowerName . ' item'),
@@ -297,6 +301,10 @@ class TwbTableHelper extends BbTableHelper {
 	 */
 	protected function _setupResponsive($options) {
 		
+		if (is_bool($options)) {
+			$options = 'id';
+		}
+			
 		// string2array for main key definition
 		if (is_string($options)) {
 			$tmp = explode(',', $options);

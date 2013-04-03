@@ -49,6 +49,31 @@
 }
 
 
+/**
+ * Page Header
+ */
+.twb-page-header {
+	position:relative;
+	z-index: auto;
+	
+	.btn-group {
+		position: absolute;
+		bottom:10px;
+		right:0;
+	}
+}
+
+.twb-page-header.twb-sticky {
+	position: relative;
+	z-index: 999;
+	.btn-group {
+		position: relative;
+		bottom:auto;
+		right:auto;
+	}
+}
+
+
 
 
 // ----------------------------------------- //
@@ -142,6 +167,15 @@ html.good .form-horizontal .error .help-inline {
 }
 
 
+/**
+ * Autosize textarea:
+ */
+textarea[data-autosize="on"] {
+	vertical-align: top;
+	-webkit-transition: height 0.2s;
+	-moz-transition: height 0.2s;
+	transition: height 0.2s;
+}
 
 
 
