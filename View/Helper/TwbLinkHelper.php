@@ -64,7 +64,8 @@ class TwbLinkHelper extends AppHelper {
 			'icon' => '',
 			'icon-right' => false,
 			'icon-white' => false,
-			'icon-only' => false
+			'icon-only' => false,
+			'escape' => false
 		), $options, array(
 			'$++class' => 'btn'
 		));

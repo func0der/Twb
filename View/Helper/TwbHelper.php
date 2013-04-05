@@ -227,6 +227,7 @@ class TwbHelper extends BbHtmlHelper {
 		$options = BB::extend(array(
 			'model' => '',
 			'actions' => 'Save',
+			'end' => array(),
 			'sections' => array(),
 			'fields' => array()
 		), $options);
@@ -236,6 +237,7 @@ class TwbHelper extends BbHtmlHelper {
 		$_create = BB::clear($options, array(
 			'model',
 			'actions',
+			'end',
 			'xtag',
 			'fields',
 			'sections'
@@ -286,9 +288,13 @@ class TwbHelper extends BbHtmlHelper {
 			$text = BB::extend($text, $this->_xtagFormFields($options['fields']));
 		}
 		
+		$options['end'] = BB::extend(array(
+			'actions' => $options['actions']
+		), $options['end']);
+		
 		$code = $this->Form->create($options['model'], $_create);
 		$code.= $this->tag($text);
-		$code.= $this->Form->end($options['actions']);
+		$code.= $this->Form->end($options['end']);
 		
 		return $code;
 	}

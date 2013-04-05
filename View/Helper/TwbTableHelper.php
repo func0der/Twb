@@ -79,7 +79,7 @@ class TwbTableHelper extends BbTableHelper {
 			'responsiveOnMobile'
 		), false);
 		
-		#debug($options);
+		#ddebug($options);
 		return parent::render($data, $options);	
 	}
 	
