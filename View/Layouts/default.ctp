@@ -45,12 +45,21 @@
 			echo $this->Html->meta(null, BB::read('Twb.canonical'), array('rel' => 'canonical', 'type' => null));
 		}
 		
+		
 		/**
 		 * LayoutCSS
 		 */
+		$css = 'Twb.compiled/bootstrap';
+		if (BB::check('Twb.cssTheme')) {
+			$css = 'Twb.themed/' . BB::read('Twb.cssTheme');
+			BB::write('Twb.cssMin', true);
+		}
+		if (BB::check('Twb.cssMin')) {
+			$css.= '.min';
+		}
+		
 		$this->Html->css(array(
-			'Twb.compiled/bootstrap.min',
-			#'Twb.themed/spacelab.min',
+			$css,
 			'Twb.compiled/bootstrap-responsive.min',
 			'Twb.twb-core'
 		), false);
@@ -128,7 +137,8 @@
 		'tag' => 'body',
 		'content' => array(
 			$this->fetch('content'),
-			$this->fetch('script')
+			$this->fetch('script'),
+			$this->fetch('inlineScript')
 		)
 	)));
 	
