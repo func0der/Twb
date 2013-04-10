@@ -25,7 +25,7 @@ $contentSpan = 12 - $sidebarSpan - $offset;
  */
 $content = array(
 	'span' => $contentSpan,
-	'class' => 'span-content',
+	'class' => 'twb-span-content',
 	'content' => $this->fetch('content')
 );
 
@@ -34,7 +34,7 @@ $content = array(
  */
 $sidebar = array(
 	'span' => $sidebarSpan,
-	'class' => 'span-sidebar',
+	'class' => 'twb-span-sidebar',
 	'content' => $sidebar
 );
 
@@ -67,6 +67,7 @@ $sidebar = BB::extend($sidebar, BB::read('Twb.layout.sidebar.config', array()));
 
 echo $this->Html->tag(array(
 	'xtag' => 'row',
+	'class' => 'twb-tpl-sidebar',
 	'fluid' => BB::read('Twb.layout.container.fluid'),
 	'if' => BB::read('Twb.layout.sidebar.inverse'),
 	'content' => array($sidebar, $content),
