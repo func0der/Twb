@@ -264,6 +264,7 @@ class TwbTableHelper extends BbTableHelper {
 			'show'	=> __('delete'),
 			'title' => __('delete item'),
 			'data-twb-role' => 'deleteTableRow',
+			'data-twb-ajax' => 'on',
 			'href'	=> array(
 				'action' => 'delete',
 				$row[$this->model]['id']
