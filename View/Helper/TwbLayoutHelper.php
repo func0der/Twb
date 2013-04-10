@@ -71,6 +71,10 @@ class TwbLayoutHelper extends AppHelper {
 			unset($options['fixed']);
 		}
 		
+		if (!empty($options['class'])) {
+			$options['class'] = $base_class . ' ' . $options['class'];
+		}
+		
 		$options = BB::setDefaultAttrsId($options, array(
 			'class' => $base_class,
 			'content' => $content,
@@ -256,16 +260,12 @@ class TwbLayoutHelper extends AppHelper {
 			));
 		}
 		
-		// title structure
-		return $this->Html->tag(BB::extend(array(
-			'content' => array(
-				BB::extend(array(
-					'class' => 'pull-right',
-					'content' => $actions
-				), BB::setDefaultAttrs($options['actionOptions'])),
-				$title,
-			)
-		), BB::clear($options, array(
+		$actions = $this->Html->tag(BB::extend(array(
+			'class' => 'pull-right',
+			'content' => $actions
+		), BB::setDefaultAttrs($options['actionOptions'])));
+		
+		$tagOptions = BB::clear($options, array(
 			'image',
 			'title',
 			'titleTag',
@@ -273,7 +273,25 @@ class TwbLayoutHelper extends AppHelper {
 			'actions',
 			'groupActions',
 			'actionOptions'
-		))));
+		));
+		
+		// title structure
+		/*
+		if ($this->_View->request->is('mobile')) {
+			$content = array($title, $actions)
+		} else {
+			
+		}*/
+		return $this->Html->tag(BB::extend(array(
+			'if' => !$this->_View->request->is('mobile'),
+			'content' => array(
+				$actions,
+				$title,
+			),
+			'else' => array(
+				$title, $actions
+			)
+		), $tagOptions));
 	}
 	
 	
