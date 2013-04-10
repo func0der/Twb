@@ -323,6 +323,27 @@ class TwbFormHelper extends FormHelper {
 			return $this->upload($name, $options);
 		}
 		
+		// accept "typeahead" data suggestions
+		if (isset($options['typeahead'])) {
+			$options['data-provide']	= 'typeahead';
+			$options['data-items']		= count($options['typeahead']);
+			$options['data-source']		= 'typeahead';
+			$typeaheads = '[';
+			foreach($options['typeahead'] as $tmp) $typeaheads.= '"' . $tmp . '",';
+			$typeaheads = substr($typeaheads, 0, strlen($typeaheads)-1) . ']';
+			unset($options['typeahead']);
+			
+			$append = '<a href="#" onclick="return false;" class="btn typeahead-show" type="button"><i class="icon-chevron-down"></i></a>';
+			
+			if (empty($options['append'])) {
+				$options['append'] = array();
+			}
+			if (is_array($options['append'])) {
+				$options['append'][] = $append;
+			} else {
+				$options['append'].= $append;
+			}
+		}
 		
 		$options = $this->_labelOptions($options);
 		$options = $this->_helperOptions($options);
@@ -342,7 +363,47 @@ class TwbFormHelper extends FormHelper {
 			$options['data-autosize'] = 'on';
 		} unset($options['autosize']);
 		
-		return parent::input($name, BB::extend($this->_inputDefaults, $options));
+		
+		// fill with default options
+		$options = BB::extend($this->_inputDefaults, $options);
+		
+		
+		$wrap = array(
+			'class' => '',
+			'content' => array('$$__SPLIT__$$')
+		);
+		
+		// "prepend" items to the field
+		if (isset($options['prepend'])) {
+			$wrap['class'].= 'input-prepend ';
+			if (!is_array($options['prepend'])) $options['prepend'] = array($options['prepend']);
+			$wrap['content'] = BB::extend($options['prepend'], $wrap['content']);
+			unset($options['prepend']);
+		}
+		
+		// "append" items to the field
+		if (isset($options['append'])) {
+			$wrap['class'].= 'input-append';
+			if (!is_array($options['append'])) $options['append'] = array($options['append']);
+			$wrap['content'] = BB::extend($wrap['content'], $options['append']);
+			unset($options['append']);
+		}
+		
+		if (count($wrap['content']) > 1) {
+			$wrap = explode('$$__SPLIT__$$', $this->Html->tag($wrap));
+			$options['between'].= $wrap[0];
+			$options['after'] = $wrap[1] . $options['after'];
+		}
+		
+		// render the field 
+		$field = parent::input($name, $options);
+		
+		// fix "typeahead" data source values
+		if (isset($typeaheads)) {
+			$field = str_replace('data-source="typeahead"', 'data-source=\''.$typeaheads.'\'', $field);
+		}
+		
+		return $field;
 	}
 	
 	
