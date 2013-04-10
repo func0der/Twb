@@ -23,6 +23,11 @@ class TwbLinkHelper extends AppHelper {
 			'icon-only' => false
 		), BB::set($options, 'icon'));
 		
+		// icons-only on mobile devices to save space!
+		if ($options['icon-only'] === 'mobile') {
+			$options['icon-only'] = $this->_View->request->is('mobile');
+		}
+		
 		if (!empty($options['icon'])) {
 			$icon = $this->TwbTypo->icon($options['icon'], $options['icon-white']);
 			if ($options['icon-only']) {
@@ -67,7 +72,7 @@ class TwbLinkHelper extends AppHelper {
 			'icon-only' => false,
 			'escape' => false
 		), $options, array(
-			'$++class' => 'btn'
+			'$++class' => ' btn'
 		));
 		
 		if (!empty($options['type'])) {
@@ -80,6 +85,11 @@ class TwbLinkHelper extends AppHelper {
 		
 		if ($options['block']) {
 			$options['class'] .= ' btn-block';
+		}
+		
+		// icons-only on mobile devices to save space!
+		if ($options['icon-only'] === 'mobile') {
+			$options['icon-only'] = $this->_View->request->is('mobile');
 		}
 		
 		if (!empty($options['icon'])) {
@@ -111,9 +121,6 @@ class TwbLinkHelper extends AppHelper {
 			'content' => $buttons
 		), $options));
 	}
-	
-	
-	
 	
 }
 
