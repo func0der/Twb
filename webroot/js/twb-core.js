@@ -59,6 +59,7 @@ window.Twb = {};
 		
 		// init forms behaviors
 		Twb.formInputPopover();
+		Twb.formTypeahead();
 		Twb.formErrorsAction('.form-standard, .form-horizontal');
 		Twb.formErrorsTooltip('.form-horizontal');
 		Twb.ajaxForm('form[data-twb-ajax=on]');
@@ -400,6 +401,44 @@ window.Twb = {};
 		});
 	};
 	
+	
+	/**
+	 * Twb typeahead show all menu items hack
+	 */
+	$.fn.typeahead.Constructor.prototype.showmenu = function (event) {
+      var that = this
+        , items
+        , q
+
+      this.query = this.$element.val()
+
+      if (this.query) {
+        return this.lookup(event)
+      }
+
+      items = jQuery.extend(true, new Array(), this.source);
+
+      items = this.sorter(items)
+
+      if (!items.length) {
+        return this.shown ? this.hide() : this
+      }
+
+      return this.render(items.slice(0, this.options.items)).show()
+    };
+	
+	Twb.formTypeahead = function() {
+		$('input[data-provide=typeahead]').each(function() {
+			var $input = $(this);
+			$input.bind('dblclick', function() {
+				$input.typeahead('showmenu');
+			});
+			$input.parent().find('.typeahead-show').bind('click', function() {
+				$input.focus().trigger('dblclick');
+			});
+		});
+	};
+	
 	Twb.setFormErrors = function(errors, form) {
 		var $form = $(form);
 		$.each(errors.fields, function(fid, msg) {
@@ -603,12 +642,16 @@ window.Twb = {};
 		
 		Twb.modal({
 			onConfirm: function() {
-				$.ajax({
-					type: 		'POST',
-					url: 		$btn.attr('href'),
-					success: 	_success,
-					error: 		_error
-				});
+				if ($btn.data('twb-ajax') == 'on') {
+					$.ajax({
+						type: 		'POST',
+						url: 		$btn.attr('href'),
+						success: 	_success,
+						error: 		_error
+					});
+				} else {
+					document.location.href = $btn.attr('href');
+				}
 			}
 		});
 		

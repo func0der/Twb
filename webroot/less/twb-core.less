@@ -49,30 +49,93 @@
 }
 
 
-/**
- * Page Header
- */
+
+
+
+
+
+// --------------------------------------- //
+// ---[[   P A G E   C O L U M N S   ]]--- //
+// --------------------------------------- //
+
+@media (max-width: 978px) {
+	.twb-span-content, .twb-span-sidebar {
+		float: none;
+		clear: both;
+		margin:0 !important;
+		width:100% !important;
+	}
+}
+
+
+
+
+
+
+// ------------------------------------- //
+// ---[[   P A G E   H E A D E R   ]]--- //
+// ------------------------------------- //
+
 .twb-page-header {
 	position:relative;
 	z-index: auto;
 	
 	.btn-group {
 		position: absolute;
-		bottom:10px;
+		bottom:5px;
 		right:0;
 	}
 }
 
-.twb-page-header.twb-sticky {
-	position: relative;
-	z-index: 999;
-	.btn-group {
-		position: relative;
-		bottom:auto;
-		right:auto;
+@media (max-width: 978px) {
+	.twb-page-header {
+		small {
+			display:block;
+			font-size:.7em;
+			margin-bottom:5px;
+			margin-top:-8px;
+		}
 	}
 }
 
+@media (max-width: 480px) {
+
+	.pull-right {
+		float: none;
+		clear: both;
+		margin:5px 0;
+	}
+	
+	.twb-page-header {
+		h1, h2, h3, h4, h5, h6, small {
+			font-size:1em;
+			line-height: 1.2em;
+			margin:0;
+		}
+		
+		.btn-group {
+			position: relative;
+			bottom:auto;
+			right:auto;
+		}
+	}
+	
+}
+
+@media (min-width: 978px) {
+	.twb-page-header.twb-sticky {
+		position: relative;
+		z-index: 999;
+		h1, h2, h3, h4, h5, h6 {
+			float:left;
+		}
+		.btn-group {
+			position: relative;
+			bottom:auto;
+			right:auto;
+		}
+	}
+}
 
 
 
