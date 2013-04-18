@@ -192,6 +192,22 @@ class TwbTableHelper extends BbTableHelper {
 					'icon-white' => true
 				), $config);
 			}
+
+			// Manipulate config
+			$callable = 'tbodyActions'.ucfirst($name);
+
+			// callable label
+			if (isset($config['config']) && is_callable($config['config'])) {
+				$config = BB::callback($config['config'], $this, $config, $data);
+			
+			// generic options callback
+			} elseif (!empty($this->options[$callable]) && is_callable($this->options[$callable])) {
+				$config = BB::callback($this->options[$callable], $this, $config, $data);
+			
+			// internal method
+			} elseif (method_exists ($this, $callable) && is_callable(array($this, $callable))) {
+				$config = BB::callback(array($this, $callable), $config);
+			}
 			
 			switch (strtolower($name)) {
 				case 'view':
