@@ -29,23 +29,82 @@
 #twb-ajax-activity.visible {
   top: -5px;
 }
+.table {
+  background: #fff;
+}
+@media (max-width: 978px) {
+  .twb-span-content,
+  .twb-span-sidebar {
+    float: none;
+    clear: both;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+}
 .twb-page-header {
   position: relative;
   z-index: auto;
 }
 .twb-page-header .btn-group {
   position: absolute;
-  bottom: 10px;
+  bottom: 5px;
   right: 0;
 }
-.twb-page-header.twb-sticky {
-  position: relative;
-  z-index: 999;
+@media (max-width: 978px) {
+  .twb-page-header small {
+    display: block;
+    font-size: .7em;
+    margin-bottom: 5px;
+    margin-top: -8px;
+  }
 }
-.twb-page-header.twb-sticky .btn-group {
-  position: relative;
-  bottom: auto;
-  right: auto;
+@media (max-width: 480px) {
+  .pull-right {
+    float: none;
+    clear: both;
+    margin: 5px 0;
+  }
+  .twb-page-header {
+    margin-top: -15px;
+  }
+  .twb-page-header h1,
+  .twb-page-header h2,
+  .twb-page-header h3,
+  .twb-page-header h4,
+  .twb-page-header h5,
+  .twb-page-header h6,
+  .twb-page-header small {
+    font-size: 1.3em;
+    line-height: 1.4em;
+    margin: 0;
+  }
+  .twb-page-header small {
+    font-size: .7em;
+  }
+  .twb-page-header .btn-group {
+    position: relative;
+    bottom: auto;
+    right: auto;
+  }
+}
+@media (min-width: 978px) {
+  .twb-page-header.twb-sticky {
+    position: relative;
+    z-index: 999;
+  }
+  .twb-page-header.twb-sticky h1,
+  .twb-page-header.twb-sticky h2,
+  .twb-page-header.twb-sticky h3,
+  .twb-page-header.twb-sticky h4,
+  .twb-page-header.twb-sticky h5,
+  .twb-page-header.twb-sticky h6 {
+    float: left;
+  }
+  .twb-page-header.twb-sticky .btn-group {
+    position: relative;
+    bottom: auto;
+    right: auto;
+  }
 }
 .ui-pnotify.pnotify-stack-top-right {
   top: 65px;
@@ -95,11 +154,17 @@
 html.good .form-horizontal .error .help-inline {
   display: none;
 }
-textarea[data-autosize="on"] {
+textarea[data-twb-autosize="on"] {
   vertical-align: top;
   -webkit-transition: height 0.2s;
   -moz-transition: height 0.2s;
   transition: height 0.2s;
+}
+.popover .popover-content {
+  font-size: .9em;
+}
+.popover .popover-content hr {
+  margin: 5px 0;
 }
 @media (max-width: 978px) {
   .twb-stickyUi .twb-sticky-ghost {
