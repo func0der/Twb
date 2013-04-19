@@ -6,6 +6,11 @@
 $this->extend('Twb.Template/empty');
 
 
+// -- EVT --
+$this->getEventManager()->dispatch($e = new CakeEvent('Twb.view.beforeContainerOutput', $this));
+if ($e->isStopped()) return;
+
+
 $pageHeader = $this->fetch('pageHeader');
 if (empty($pageHeader)) {
 	$pageHeader = BB::read('Twb.layout.pageHeader');
@@ -39,3 +44,6 @@ echo $this->Html->tag(array(
 		$this->fetch('content')
 	)
 ));
+
+// -- EVT --
+$this->getEventManager()->dispatch($e = new CakeEvent('Twb.view.afterContainerOutput', $this));

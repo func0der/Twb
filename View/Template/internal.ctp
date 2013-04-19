@@ -10,7 +10,7 @@ $this->extend('Twb.Template/container');
  */
 echo $this->Html->tag(array(
 	'xtag' => 'row',
-	'fixed' => !(BB::read('Twb.layout.container.fluid', BB::read('Twb.layout.fluid'))),
+	#'fixed' => !(BB::read('Twb.layout.container.fluid', BB::read('Twb.layout.fluid'))),
 	'content' => array(
 		array(
 			'content' => $this->fetch('content')
