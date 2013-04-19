@@ -148,6 +148,7 @@ class TwbFormHelper extends FormHelper {
 		
 		// render actions
 		$ractions = '';
+		if ($actions === false) $actions = array();
 		foreach ($actions as $actionName => $action) {
 			
 			// action button from string!
@@ -314,6 +315,7 @@ class TwbFormHelper extends FormHelper {
 	 * Implement generic form input field following form's style.
 	 */
 	public function input($name = '', $options = array()) {
+		$options = BB::set($options, 'label');
 		
 		// checkbox
 		if (!empty($options['type']) && $options['type'] == 'checkbox') {
@@ -353,6 +355,18 @@ class TwbFormHelper extends FormHelper {
 			}
 		}
 		
+		// "autofocus" option
+		if (isset($options['autofocus'])) {
+			$options['data-twb-autofocus'] = 'on';
+			unset($options['autofocus']);
+		}
+		
+		// data-autosize special options
+		if (isset($options['autosize'])) {
+			$options['data-twb-autosize'] = 'on';
+			unset($options['autosize']);
+		}
+		
 		$options = $this->_labelOptions($options);
 		$options = $this->_helperOptions($options);
 		
@@ -365,12 +379,6 @@ class TwbFormHelper extends FormHelper {
 				$options['label'] = false;
 				break;
 		}
-		
-		// data-autosize special options
-		if (isset($options['autosize'])) {
-			$options['data-autosize'] = 'on';
-		} unset($options['autosize']);
-		
 		
 		// fill with default options
 		$options = BB::extend($this->_inputDefaults, $options);
@@ -720,8 +728,25 @@ class TwbFormHelper extends FormHelper {
 				'title'		=> '',
 				'content'	=> '',
 				'position'	=> $position,
-				'trigger'	=> $trigger
+				'trigger'	=> $trigger,
+				'html'		=> true
 			), 'content');
+			
+			// mobile targetized options
+			if ($this->request->is('mobile')) {
+				if (isset($helper['mobile']) && $helper['mobile'] == false) {
+					return BB::clear($options, 'helper', false);
+				}
+				if (isset($helper['mobile-position'])) {
+					$helper['position'] = $helper['mobile-position'];
+				}
+				if (isset($helper['mobile-title'])) {
+					$helper['title'] = $helper['mobile-title'];
+				}
+				if (isset($helper['mobile-content'])) {
+					$helper['content'] = $helper['mobile-content'];
+				}
+			}
 			
 			// fetch title from content's text
 			if (empty($helper['title']) && strpos($helper['content'], '>>') !== false) {
@@ -736,6 +761,7 @@ class TwbFormHelper extends FormHelper {
 			if (!empty($helper['content']))		$options['data-content']		= $helper['content'];
 			if (!empty($helper['position']))	$options['data-placement']		= $helper['position'];
 			if (!empty($helper['trigger']))		$options['data-trigger']		= $helper['trigger'];
+			if (!empty($helper['html']))		$options['data-html']			= $helper['html'];
 		}
 		return BB::clear($options, 'helper', false);
 	}
