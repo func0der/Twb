@@ -71,7 +71,24 @@ window.Twb = {};
 		$('table').delegate('[data-twb-role="deleteTableRow"]', 'click', Twb.deleteTableRow);
 		
 		// textarea grows and shrinks
-		$('textarea[data-autosize="on"],textarea[data-autosize="true"],textarea[data-autosize=1]').data('autosize', null).autosize({append: "\n"})
+		$('textarea[data-twb-autosize="on"],textarea[data-twb-autosize="true"],textarea[data-twb-autosize=1]').data('autosize', null).autosize({append: "\n"})
+		
+		// delayed widget initialization
+		// useful to handle components created on-the-fly!
+		setTimeout(function() {
+			$('[data-numeric="on"]').popover();
+			$('[data-twb-autofocus="on"]').focus();
+		}, 500);
+		
+		// chardinJS
+		if (!Twb.is.phone) {
+			$('[href=#chardin]').bind('click', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+				$('body').chardinJs('start');	
+			});
+		}
+		
 		
 	});
 	
@@ -351,7 +368,7 @@ window.Twb = {};
 			$.pnotify.defaults.opacity = 0.85;
 			// convert session messages into notifications
 			// @TODO: setup a delay between each notification?
-			$('.alert').each(function() {
+			$('[twb-role=sessionMsg]').each(function() {
 				var $this = $(this).hide();
 				$this.find('button').remove();
 				
