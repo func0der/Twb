@@ -46,8 +46,8 @@ class TwbFormHelper extends FormHelper {
 		} unset($options['validate']);
 		
 		
-		switch ($options['layout']) {
-			
+		switch ($options['layout']) {			
+
 			case 'inline':
 				$this->layout = 'inline';
 				$options['class'] = trim('form-inline ' . $options['class']);
@@ -230,25 +230,33 @@ class TwbFormHelper extends FormHelper {
 				
 				// action's defaults
 				$action = BB::extend(array(
-					'tag'	=> 'input',
 					'type'	=> 'submit',
-					'class'	=> 'btn'
+					'class'	=> 'btn',
+					'div' => false
 				), $action);
 				
 			} else {
 				$action = BB::extend(array(
-					'tag' => 'input',
 					'type' => 'submit',
 					'value' => $actionName,
 					'name' => $actionName,
-					'class' => 'btn'
+					'class' => 'btn',
+					'div' => false
 				), BB::set($action, 'value'));
 			}
 			
-			
-			
-			// append blank char to separate buttons if no group is applied
-			$ractions.= $this->Html->tag($action) . ' ';
+			// append blank char to separate buttons if no group is appliedy
+			$ractions.= $this->submit(
+				$action['value'],
+				BB::clear(
+					$action,
+					array(
+						'value',
+						'tag'
+					),
+					false
+				)
+			) . ' ';
 		}
 		
 		// apply defaults
