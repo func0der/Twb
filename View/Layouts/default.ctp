@@ -84,6 +84,10 @@
 		$this->Html->css('Twb./js/3rd/mediatable/jquery.mediatable', array('inline' => false, 'prepend' => false));
 		$this->Html->script('Twb.3rd/mediatable/jquery.mediatable', array('inline' => false, 'prepend' => false));
 		
+		// Chardin Plugin
+		$this->Html->css('Twb./js/3rd/chardinjs/chardinjs', array('inline' => false, 'prepend' => false));
+		$this->Html->script('Twb.3rd/chardinjs/chardinjs', array('inline' => false, 'prepend' => false));
+		
 		// UI plugins
 		$this->Html->script(array(
 			'Twb.3rd/jquery.numeric',
