@@ -5,6 +5,7 @@
  */
 echo $this->Html->tag(array(
 	'class' 	=> 'alert alert-'.$type,
+	'twb-role'	=> 'sessionMsg',
 	'content' 	=> array(
 		array(
 			'tag' 			=> 'button',
