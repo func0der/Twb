@@ -3,13 +3,6 @@
  * Twitter Bootstrap - UI Plugin
  */
 class TwbCoreComponent extends Component {
-
-	/**
-	 * Key value to determine if the layout should be changed.
-	 *
-	 * @var string
-	 */
-	public $changeLayout = false;
 	
 	public function initialize(Controller $Controller) {
 		
@@ -28,6 +21,11 @@ class TwbCoreComponent extends Component {
 		$Controller->helpers[] = 'Twb.TwbLink';
 		$Controller->helpers[] = 'Twb.TwbDropdown';
 		
+		// Setup default layout
+		if ($Controller->layout === 'default') {
+			$Controller->layout = 'Twb.default';
+		}
+		
 		
 		
 	}
@@ -36,11 +34,6 @@ class TwbCoreComponent extends Component {
 	 * Alias FormHelper only if a Twb layout is used
 	 */
 	public function beforeRender(Controller $Controller) {
-		// Setup default layout
-		if ($this->changeLayout === true && $Controller->layout === 'default') {
-			$Controller->layout = 'Twb.default';
-		}
-
 		if (substr($Controller->layout, 0, 4) === 'Twb.') {
 			$Controller->helpers = BB::extend($Controller->helpers, array(
 				'Form' => array('className' => 'Twb.TwbForm')
