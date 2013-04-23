@@ -31,7 +31,9 @@ class TwbHelper extends BbHtmlHelper {
 		BB::registerXtag('link',		array($this, 'xtagLinkIco')); // override BB
 		BB::registerXtag('linkbtn',		array($this, 'xtagLinkBtn'));
 		BB::registerXtag('btngroup',	array($this, 'xtagBtnGroup'));
+		
 		BB::registerXtag('thumb',		array($this, 'xtagThumb'));
+		BB::registerXtag('alert',		array($this, 'xtagAlert'));
 		
 		BB::registerXtag('table',		array($this, 'xtagTable'));
 		
@@ -153,6 +155,16 @@ class TwbHelper extends BbHtmlHelper {
 			case 'beforeRender' : 
 				if (empty($options['caption'])) $options['caption'] = $text;
 				return $this->TwbLayout->thumb(BB::clear($options, 'xtag'));
+		}
+	}
+	
+	public function xtagAlert($mode, $name, $text, $options) {
+		switch ($mode) {
+			case 'options' :
+				return array($name, $text, $options);
+			case 'beforeRender': 
+				$options['content'] = $text;
+				return $this->TwbLayout->alert(BB::clear($options, 'xtag'));
 		}
 	}
 	

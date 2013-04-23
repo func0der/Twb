@@ -374,6 +374,85 @@ class TwbLayoutHelper extends AppHelper {
 	
 	
 	
+	/**
+	 * Produces an alert UI widget
+	 */
+	public function alert($options = array()) {
+		
+		// quick alert with title/text
+		if (func_num_args() == 2) {
+			$options = array(
+				'title' => func_get_arg(0),
+				'content' => func_get_arg(1)
+			);
+		}
+		
+		$options = BB::setDefaults($options, array(
+			'type'	=> null,
+			'close' => true,
+			'block' => false,
+			
+			'title' => null,
+			'titleTag' => 'h4',
+			'titleOptions' => array(),
+			
+			'content' => null
+			
+		), 'content');
+		
+		
+		// build internal structure array and apply noble properties
+		
+		$tagConfig = array(
+			'class' => 'alert',
+			'content' => array()
+		);
+		
+		if (!empty($options['type'])) {
+			$tagConfig['class'] .= ' alert-' . $options['type'];
+		}
+		
+		if (!empty($options['block'])) {
+			$tagConfig['class'] .= ' alert-block';
+		}
+		
+		if (!empty($options['class'])) {
+			$tagConfig['class'] .= ' ' . $options['class'];
+		}
+		
+		if ($options['close']) {
+			$tagConfig['content'][] = '<button type="button" class="close" data-dismiss="alert">&times;</button>';
+		}
+		
+		if (!empty($options['title'])) {
+			$tagConfig['content'][] = BB::extend($options['titleOptions'], array(
+				'tag' => $options['titleTag'],
+				'content' => $options['title']
+			));
+		}
+		
+		if (is_array($options['content'])) {
+			$tagConfig['content'] = BB::extend($tagConfig['content'], $options['content']);
+		} else {
+			$tagConfig['content'][] = $options['content'];
+		}
+		
+		
+		// apply fine end properties to the outer alert tag
+		
+		$options = BB::clear($options, array(
+			'type',
+			'close',
+			'block',
+			'title',
+			'titleTag',
+			'titleOptions',
+			'content'
+		));
+		
+		return $this->Html->tag(BB::extend($tagConfig, $options));
+	}
+	
 	
 	
 
