@@ -55,6 +55,13 @@ class TwbDropdownHelper extends AppHelper {
 		if ($item['BbMenu']['active']) {
 			$li = BB::extend($li, array('$++class' => ' active'));
 		}
+		
+		if (isset($item['BbMenu']['sep']) && strpos($item['BbMenu']['sep'], 'before') !== false) {
+			$li['before'] = '<li class="divider-vertical"></li>';
+		}
+		if (isset($item['BbMenu']['sep']) && strpos($item['BbMenu']['sep'], 'after') !== false) {
+			$li['after'] = '<li class="divider-vertical"></li>';
+		}
 
 		return $li;
 	}
@@ -93,6 +100,13 @@ class TwbDropdownHelper extends AppHelper {
 		// active item
 		if ($item['BbMenu']['active']) {
 			$li = BB::extend($li, array('$++class' => ' active'));
+		}
+		
+		if (isset($item['BbMenu']['sep']) && strpos($item['BbMenu']['sep'], 'before') !== false) {
+			$li['before'] = '<li class="divider"></li>';
+		}
+		if (isset($item['BbMenu']['sep']) && strpos($item['BbMenu']['sep'], 'after') !== false) {
+			$li['after'] = '<li class="divider"></li>';
 		}
 
 		return $li;
