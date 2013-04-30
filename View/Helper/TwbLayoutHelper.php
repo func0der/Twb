@@ -247,6 +247,7 @@ class TwbLayoutHelper extends AppHelper {
 					'show' => $actionName,
 					'href' => array('action' => $actionName)
 				), $actionConfig);
+				#debug($actionConfig);
 				echo $this->Html->tag($actionConfig);
 			}
 			$actions = ob_get_clean();
