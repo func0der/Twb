@@ -89,7 +89,6 @@ window.Twb = {};
 			});
 		}
 		
-		
 	});
 	
 	
@@ -690,11 +689,6 @@ window.Twb = {};
 			location.href = $btn.attr('href');
 		};
 	};
-
-
-
-	
-	
 	
 
 
