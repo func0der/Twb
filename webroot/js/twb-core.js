@@ -557,72 +557,82 @@ window.Twb = {};
 			$form.ajaxForm({
 				dataType: 'json',
 				success: function(data) {
-					
-					data = $.extend({},{
-						ajax: {
-							msg: null,
-							title: null
-						}
-					},data);
-					
-					// display validation errors
-					if (data.formErrors) Twb.setFormErrors(data.formErrors, $form);
-					
-					// apply notification based on given "type"
-					// or fallback to generic waring message.
-					if (typeof Twb.msg[data.ajax.type] == 'function') {
-						Twb.msg[data.ajax.type].call(this, data.ajax.text, data.ajax.title);
-					} else {
-						Twb.msg.warning(data.ajax.text, data.ajax.title);
-					}
-					
-					// apply redirect - if required by ajax response object
-					// (skip notification on phones!)
-					if (data.ajax.redirect) {
-						setTimeout(function() {
-							if (!Twb.is.phone) Twb.msg.info('please wait while redirecting');
-							location.href = data.ajax.redirect;
-						}, 700);
-					}
-					
-					// !!! EXPERIMENTAL !!!
-					// update BbAttachment uploads
-					if (data.data && data.data.BbAttachment) {
-						$.each(data.data.BbAttachment, function(id, b64) {
-							var $field = $('#'+id);
-							var $wrap = $field.parent();
-							
-							var $preview = $wrap.find('.twb-upload-preview img');
-							if (!$preview.length) {
-								$preview = $('<img>').hide();
-								$wrap.find('.twb-upload-preview').append($preview);
-							}
-							
-							// update upload field preview and all binded icons
-							$preview.attr('src', 'data:image/png;base64,' + b64);
-							$('img[data-twb-role="' + id + 'UploadPreview"]').attr('src', 'data:image/png;base64,' + b64);
-							$('img.' + id + 'UploadPreview').attr('src', 'data:image/png;base64,' + b64);
-							
-							if ($preview.is(':hidden')) $preview.fadeIn();
-						});
-					}
+
+					Twb.ajaxFormSuccessCallback($form, data);
 					
 				},
 				// ajax error - disable ajax form
 				error: function() {
-					Twb.msg.error("AJAX request could not be solved!<br>Sending form the standard way now...", "AJAX Error:");
-					setTimeout(function() {
-						$form.unbind('submit').submit();	
-					}, 500);
-				}
+					Twb.ajaxFormErrorCallback($form);	
+				},
 			});
 			
 		});
 	};
 	
+	/**
+	 * Ajax submit success callback
+	 */
+	Twb.ajaxFormSuccessCallback = function($form, data) {
+	 	data = $.extend({},{
+			ajax: {
+				msg: null,
+				title: null
+			}
+		},data);
+		
+		// display validation errors
+		if (data.formErrors) Twb.setFormErrors(data.formErrors, $form);
+		
+		// apply notification based on given "type"
+		// or fallback to generic waring message.
+		if (typeof Twb.msg[data.ajax.type] == 'function') {
+			Twb.msg[data.ajax.type].call(this, data.ajax.text, data.ajax.title);
+		} else {
+			Twb.msg.warning(data.ajax.text, data.ajax.title);
+		}
+		
+		// apply redirect - if required by ajax response object
+		// (skip notification on phones!)
+		if (data.ajax.redirect) {
+			setTimeout(function() {
+				if (!Twb.is.phone) Twb.msg.info('please wait while redirecting');
+				location.href = data.ajax.redirect;
+			}, 700);
+		}
+		
+		// !!! EXPERIMENTAL !!!
+		// update BbAttachment uploads
+		if (data.data && data.data.BbAttachment) {
+			$.each(data.data.BbAttachment, function(id, b64) {
+				var $field = $('#'+id);
+				var $wrap = $field.parent();
+				
+				var $preview = $wrap.find('.twb-upload-preview img');
+				if (!$preview.length) {
+					$preview = $('<img>').hide();
+					$wrap.find('.twb-upload-preview').append($preview);
+				}
+				
+				// update upload field preview and all binded icons
+				$preview.attr('src', 'data:image/png;base64,' + b64);
+				$('img[data-twb-role="' + id + 'UploadPreview"]').attr('src', 'data:image/png;base64,' + b64);
+				$('img.' + id + 'UploadPreview').attr('src', 'data:image/png;base64,' + b64);
+				
+				if ($preview.is(':hidden')) $preview.fadeIn();
+			});
+		}
+	};
 	
-	
-	
+	/**
+	 * Ajax submit error callback
+	 */
+	Twb.ajaxFormErrorCallback = function($form) {
+		Twb.msg.error("AJAX request could not be solved!<br>Sending form the standard way now...", "AJAX Error:");
+		setTimeout(function() {
+			$form.unbind('submit').submit();	
+		}, 500);
+	};
 	
 	
 	
